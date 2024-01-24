@@ -106,12 +106,22 @@ def detect(
         # Remove masks where the bbox is 'unsure'/score < score_threshold
         masks = masks[np.where(bboxes[:, 4] > score_thr)]
         
+        #TODO: Sums 2nd and 3rd axis of masks, unsure of what axis 0 is
         mask_areas = np.sum(masks, axis=(1, 2))
+        
+        #Prints the calculated min and max area of bubbles
         print(
             f"{image_path} {len(masks)} bubbles detected"
             f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
         )
 
+        # Code below sourced from user PeterVennerstrom, altered to suite needs of current project
+        # https://github.com/open-mmlab/mmdetection/issues/4713#issuecomment-879085909
+        #
+        # Creates binary B/W image of masks using fromArray from Pillow(Fork of PIL).
+        # Saves mask_img to dist_path/image_path.name as jpeg, following the convention used in prior model.show result
+        mask_img = [Image.fromarray(masks, mode='1')]
+        [mask_img.save(f'{dist_path}/{image_path.name}.JPEG')]
 
 
         # model.show_result(

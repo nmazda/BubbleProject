@@ -1,4 +1,0 @@
-train: ./train
-train_labels: ./annotations/instances_train.json
-val: ./val
-val_labels: ./annotations/instances_val.json
