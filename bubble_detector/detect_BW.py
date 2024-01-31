@@ -7,6 +7,8 @@ import cv2
 import numpy as np
 from mmdet.apis import inference_detector, init_detector
 from PIL import Image
+import matplotlib.pyplot as plt
+
 
 TEXT_COLOR = (255, 255, 255)
 BBOX_COLOR = (72, 101, 241)
@@ -99,14 +101,13 @@ def detect(
         #Calculates the bboxes and masks
         bboxes, masks = result
 
-        #TODO: Quite a fair bit confused by this line, understand it
         bboxes = bboxes[0]  # [x1, y1, x2, y2, score]
         masks = np.array(masks[0])  # mask image of the same size as the original image
 
         # Remove masks where the bbox is 'unsure'/score < score_threshold
         masks = masks[np.where(bboxes[:, 4] > score_thr)]
         
-        #TODO: Sums 2nd and 3rd axis of masks, unsure of what axis 0 is
+        #Sums total area of bubbles in image.
         mask_areas = np.sum(masks, axis=(1, 2))
         
         #Prints the calculated min and max area of bubbles
@@ -115,23 +116,19 @@ def detect(
             f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
         )
 
-        # Code below sourced from user PeterVennerstrom, altered to suite needs of current project
-        # https://github.com/open-mmlab/mmdetection/issues/4713#issuecomment-879085909
-        #
-        # Creates binary B/W image of masks using fromArray from Pillow(Fork of PIL).
-        # Saves mask_img to dist_path/image_path.name as jpeg, following the convention used in prior model.show result
-        mask_img = [Image.fromarray(masks, mode='1')]
-        [mask_img.save(f'{dist_path}/{image_path.name}.JPEG')]
+        combined_mask = np.sum(masks, axis=0)
 
+        #Replaces all values non 0 in np array with 255.
+        combined_mask[combined_mask > 0 ] = 255
 
-        # model.show_result(
-        #     image,
-        #     result,
-        #     out_file=dist_path / image_path.name,
-        #     score_thr=score_thr,
-        #     text_color=TEXT_COLOR,
-        #     bbox_color=BBOX_COLOR,
-        # )
+        #Creates an image from the combined_mask np array.
+        mask_img = Image.fromarray(combined_mask)
+
+        #Converts mask_img to greyscale image.
+        mask_img = mask_img.convert('L')
+
+        #Saves mask_img to runs folder under its original name.
+        mask_img.save(f'{dist_path}/{image_path.name}.JPEG')
 
 
 def main() -> None:
