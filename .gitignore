@@ -1,2 +1,4 @@
 checkpoint.pth
 datasets/
+runs/train*
+runs/detect*
