@@ -11,7 +11,7 @@ This way, when taking any data, such as the non lifelike simulation data, and tu
 
 ### Process of Black and White detection ###
 
-The general mask/bounding box detection is done through mmdetection, as that was the original framework this program was built off of. However, this program does not support outputting just the mask as an immage, as such, the following actions are done for each image. 
+The general mask/bounding box detection is done through mmdetection, as that was the original framework the ONO Detection app was built off of. However, this program does not support outputting just the mask as an immage, as such, the following actions are done for each image. 
 
 1. mmdetection is run, outputting the tuple "results" containing bboxes and masks.
 2. Creates an np array for masks and transfers data.
@@ -23,3 +23,5 @@ The general mask/bounding box detection is done through mmdetection, as that was
 8. mask_img is then fully converted to grey scale using .convert('L').
 9. mask_img is saved to the detect-* folder under its original name, now converted to black and white. 
 
+### Setup of ONO Detection app
+[Here is the setup for the ONO Detection app](https://github.com/nmazda/BubbleProject/blob/main/ONOSETUP.md)
