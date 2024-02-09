@@ -21,21 +21,25 @@ On CPU platforms:
 ```bash
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
-Step 3. Install requirements
+Step 3. Install requirements*
 ```bash
 pip install -r requirements/pip.txt
 mim install -r requirements/mim.txt
 ```
+*If mim is not recognized, install OpenMim
+```bash
+pip install openmim
+```
 
 ## Usage
 
-Detecting
+Detecting Black and White
 ```bash
-python detect.py ./models/bubble_swin-b/config.py ./models/bubble_swin-b/checkpoint.pth ./datasets/bubble_dataset/val/JPEGImages
+python detect_BW.py ./models/bubble_swin-b/config.py <path-to-checkpoint.pth <path-to-bubble-images>
 ```
 Training
 ```bash
-python train.py ./datasets/bubble_dataset
+python train.py <path-to-training dataset>
 ```
 If you want to configure the learning settings detail, edit config/cascade_mask_rcnn__fpn.py following [official guide](https://mmdetection.readthedocs.io/en/dev-3.x/user_guides/config.html).
 
