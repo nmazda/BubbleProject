@@ -6,7 +6,7 @@ bubble detector is a model for detecting the position and shape of bubbles using
 ## Installation
 
 Step 0.Download and install Maniconda from the [official website](https://docs.conda.io/en/latest/miniconda.html).
-Step 1.Create a conda environment and activate it.
+Step 1.Create a conda environment and activate it, terminal should be opened where you downloaded bubble_detector
 ```bash
 cd bubble_detector
 conda create --name bubble_project python=3.8 -y
@@ -33,7 +33,7 @@ pip install openmim
 
 ## Usage
 
-Detecting Black and White
+Detecting Black and White, B/W images will be output in the runs folder under detect-*
 ```bash
 python detect_BW.py ./models/bubble_swin-b/config.py <path-to-checkpoint.pth <path-to-bubble-images>
 ```
