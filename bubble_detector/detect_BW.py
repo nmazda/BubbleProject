@@ -5,9 +5,11 @@ from typing import Iterator, List, Tuple
 
 import cv2
 import numpy as np
-from mmdet.apis import inference_detector, init_detector
 from PIL import Image
+from mmdet.apis import inference_detector, init_detector
 import matplotlib.pyplot as plt
+
+
 
 
 TEXT_COLOR = (255, 255, 255)
