@@ -133,7 +133,7 @@ def detect(
         mask_img = ImageOps.invert(mask_img)
 
         #Saves mask_img to runs folder under its original name.
-        mask_img.save(f'{dist_path}/{image_path.name}')
+        mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
 
 
 def main() -> None:

@@ -1,39 +1,38 @@
 
 # bubble detector
 
-bubble detector is a model for detecting the position and shape of bubbles using mask cnn.
+bubble detector is a model for detecting the position and shape of bubbles using mask cnn. This program can only be run on a GPU platform, as cuda capabilites are needed.
 
 ## Installation
 
-Step 0.Download and install Maniconda from the [official website](https://docs.conda.io/en/latest/miniconda.html).
+Step 0.Download and install Miniconda from the [official website](https://docs.conda.io/en/latest/miniconda.html).
 Step 1.Create a conda environment and activate it, terminal should be opened where you downloaded bubble_detector
 ```bash
 cd bubble_detector
 conda create --name bubble_project python=3.8 -y
 conda activate bubble_project
 ```
-Step 2.Install Pytorch following [official instructions](https://pytorch.org/get-started/locally/), e.g.
-On GPU platforms:
+Step 2.Install CudaToolKit
 ```bash
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+conda install anaconda::cudatoolkit==11.8.0
 ```
-On CPU platforms:
+Step 3.Install Pytorch following [official instructions](https://pytorch.org/get-started/locally/), e.g.
 ```bash
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+conda install pytorch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 pytorch-cuda=11.8 -c pytorch -c nvidia
 ```
-Step 3. Install requirements*
+Step 4.Install OpenMIM
+```bash
+pip install -U openmim
+```
+Step 5.Install requirements
 ```bash
 pip install -r requirements/pip.txt
 mim install -r requirements/mim.txt
 ```
-*If mim is not recognized, install OpenMim
-```bash
-pip install openmim
-```
 
 ## Usage
 
-Detecting Black and White, B/W images will be output in the runs folder under detect-*
+Detecting Black and White, B/W images will be output in the runs folder under detect*
 ```bash
 python detect_BW.py ./models/bubble_swin-b/config.py <path-to-checkpoint.pth <path-to-bubble-images>
 ```
