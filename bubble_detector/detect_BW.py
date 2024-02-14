@@ -120,6 +120,8 @@ def detect(
 
         combined_mask = np.sum(masks, axis=0)
 
+        combined_mask = combined_mask.astype(np.uint8)
+
         #Replaces all values non 0 in np array with 255.
         combined_mask[combined_mask > 0 ] = 255
 
