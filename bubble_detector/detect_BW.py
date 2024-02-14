@@ -5,8 +5,8 @@ from typing import Iterator, List, Tuple
 
 import cv2
 import numpy as np
-from PIL import Image
 from mmdet.apis import inference_detector, init_detector
+from PIL import Image, ImageOps
 import matplotlib.pyplot as plt
 
 
@@ -129,8 +129,11 @@ def detect(
         #Converts mask_img to greyscale image.
         mask_img = mask_img.convert('L')
 
+        #Invert Image
+        mask_img = ImageOps.invert(mask_img)
+
         #Saves mask_img to runs folder under its original name.
-        mask_img.save(f'{dist_path}/{image_path.name}.JPEG')
+        mask_img.save(f'{dist_path}/{image_path.name}')
 
 
 def main() -> None:
