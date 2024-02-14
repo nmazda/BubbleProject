@@ -118,9 +118,7 @@ def detect(
             f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
         )
 
-        combined_mask = np.sum(masks, axis=0)
-
-        combined_mask = combined_mask.astype(np.uint8)
+        combined_mask = np.sum(masks, axis=0).astype(np.uint8)
 
         #Replaces all values non 0 in np array with 255.
         combined_mask[combined_mask > 0 ] = 255
