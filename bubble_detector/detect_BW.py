@@ -10,6 +10,8 @@ from PIL import Image, ImageOps
 import matplotlib.pyplot as plt
 
 
+
+
 TEXT_COLOR = (255, 255, 255)
 BBOX_COLOR = (72, 101, 241)
 
