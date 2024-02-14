@@ -34,7 +34,7 @@ mim install -r requirements/mim.txt
 
 Detecting Black and White, B/W images will be output in the runs folder under detect*
 ```bash
-python detect_BW.py ./models/bubble_swin-b/config.py <path-to-checkpoint.pth <path-to-bubble-images>
+python detect_BW.py ./models/bubble_swin-b/config.py <path-to-checkpoint.pth> <path-to-bubble-images>
 ```
 Training
 ```bash
