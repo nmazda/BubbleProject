@@ -2,3 +2,4 @@ checkpoint.pth
 datasets/
 runs/train*
 runs/detect*
+bubble_augmentation/runs/*
