@@ -73,8 +73,8 @@ def mirrorAndSplit(m, s, input_path, output_path):
 
                     #if image was mirrored, add a * to the filename
                     mirrored = ""
-                    if m: mirrored = "*"
-                    
+                    if m: mirrored = "M"
+
                     #outputdir/fimestem_0*.jpg
                     image.save(f'{output_path}/{filestem}_{i}{mirrored}.jpg')
 
