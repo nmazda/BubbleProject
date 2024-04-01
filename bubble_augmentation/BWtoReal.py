@@ -4,42 +4,22 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import cv2
+import os
 from PIL import Image
 
 tf.config.experimental.set_memory_growth(tf.config.list_physical_devices('GPU')[0], True)
 
-batch_size = 8
-train_datagen = ImageDataGenerator(rescale=1./255, data_format='channels_last')
-train_generator = train_datagen.flow_from_directory(
-    "/home/iec/Documents/bubble_project/BubbleProject/datasets",
-    target_size=(256, 256, 1),
-    batch_size=batch_size,
-    class_mode='input'
-    )
+data_dir = '/home/iec/Documents/bubble_project/BubbleProject/datasets/'
 
-train_ds = tf.keras.utils.image_dataset_from_directory(
-  "/home/iec/Documents/bubble_project/BubbleProject/datasets",
-  validation_split=0.2,
-  color_mode='grayscale',
-  subset="training",
-  seed=123,
-  label_mode=None,
-  # shuffle=False,
-  image_size=(256, 256),
-  batch_size=64)
+datagen = ImageDataGenerator(rescale=1./255)
 
-val_ds = tf.keras.utils.image_dataset_from_directory(
-  "/home/iec/Documents/bubble_project/BubbleProject/datasets",
-  validation_split=0.2,
-  color_mode='grayscale',
-  subset="validation",
-  seed=123,
-  label_mode=None,
-  # shuffle=False,
-  image_size=(256, 256),
-  batch_size=64)
-
-print(train_ds.take(2))
+data_generator = datagen.flow_from_directory(
+        data_dir,
+        target_size=(256, 256),
+        batch_size=64,
+        class_mode=None,  # This is set to 'input' to return both X and Y images
+        classes=['blackAndWhite', 'real'])  # These are the subfolders containing X and Y images
 
 # create model
 autoE = models.Sequential([
@@ -83,9 +63,11 @@ autoE = models.Sequential([
 
 autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.01))
 
-autoE.fit_generator(train_generator, train_ds, epochs=10)
+autoE.fit(data_generator, epochs=10)
 
-pred = autoE.predict(train_ds)
+exit(1)
+
+pred = autoE.predict(data_generator)
 
 temp = pred[0]
 
