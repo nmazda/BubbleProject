@@ -90,7 +90,7 @@ class DataGenerator(Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i,] = self._load_grayscale_image(self.image_path + self.labels[ID])
+            X[i,:,:,0] = self._load_grayscale_image(self.image_path + self.labels[ID])
 
         return X
 
@@ -104,8 +104,7 @@ class DataGenerator(Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            print(self.image_path + self.labels[ID])
-            y[i,] = self._load_grayscale_image(self.mask_path + self.labels[ID])
+            y[i,:,:] = self._load_grayscale_image(self.mask_path + self.labels[ID])
 
         return y
 
@@ -137,7 +136,9 @@ data_generator = datagen.flow_from_directory(
         classes=['blackAndWhite', 'real'])  # These are the subfolders containing X and Y images
 
 #Used for checking if the X and Y values are the intended images.
-print(next(data_generator).shape)
+
+
+print(data_generator[0].shape)
 
 #x_batch, y_batch = 
 
