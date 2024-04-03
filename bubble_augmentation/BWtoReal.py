@@ -2,12 +2,12 @@ import tensorflow as tf
 from tensorflow.keras import layers, models, utils
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import Sequence
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import cv2
 import os
 from PIL import Image
+from sklearn.model_selection import train_test_split
 
 tf.config.experimental.set_memory_growth(tf.config.list_physical_devices('GPU')[0], True)
 
@@ -121,9 +121,18 @@ class DataGenerator(Sequence):
 
 fileNames = os.listdir(real_dir)
 
-ids = list(range(len(fileNames)))
+# Split data into train and validation sets
+train_files, val_files = train_test_split(fileNames, test_size=0.2, random_state=42)
+
+# Assign unique IDs to train and validation data
+train_ids = list(range(len(train_files)))
+val_ids = list(range(len(val_files)))
+
+# Create DataGenerators for train and validation data
+train_generator = DataGenerator(labels=train_files, list_IDs=train_ids, image_path=bw_dir, mask_path=real_dir)
+val_generator = DataGenerator(labels=val_files, list_IDs=val_ids, image_path=bw_dir, mask_path=real_dir)
     
-imggen = DataGenerator(labels=fileNames, list_IDs=ids, image_path=bw_dir, mask_path=real_dir)
+# imggen = DataGenerator(labels=fileNames, list_IDs=ids, image_path=bw_dir, mask_path=real_dir)
 
 # datagen = ImageDataGenerator(rescale=1./255)
 
@@ -138,7 +147,7 @@ imggen = DataGenerator(labels=fileNames, list_IDs=ids, image_path=bw_dir, mask_p
 #Used for checking if the X and Y values are the intended images.
 
 
-X_batch, y_batch = imggen.__getitem__(0)
+X_batch, y_batch = train_generator.__getitem__(0)
 
 print(X_batch.shape)
 print(y_batch.shape)
@@ -213,11 +222,14 @@ autoE = models.Sequential([
   # (256, 256, 1)
 ])
 
+# mean_absolute_error or mean_squared_error
 autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.01))
 
-autoE.fit(imggen, epochs=10)
+autoE.fit(train_generator, validation_data=val_generator, epochs=10)
 
-pred = autoE.predict(imggen)
+pred = autoE.predict(train_generator)
+
+print(pred.shape)
 
 temp = pred[0]
 
