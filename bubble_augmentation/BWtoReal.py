@@ -99,12 +99,12 @@ class DataGenerator(Sequence):
         :param list_IDs_temp: list of label ids to load
         :return: batch if masks
         """
-        y = np.empty((self.batch_size, *self.dim), dtype=int)
+        y = np.empty((self.batch_size, *self.dim, self.n_channels))
 
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            y[i,:,:] = self._load_grayscale_image(self.mask_path + self.labels[ID])
+            y[i,:,:, 0] = self._load_grayscale_image(self.mask_path + self.labels[ID])
 
         return y
 
@@ -125,38 +125,53 @@ ids = list(range(len(fileNames)))
     
 imggen = DataGenerator(labels=fileNames, list_IDs=ids, image_path=bw_dir, mask_path=real_dir)
 
-datagen = ImageDataGenerator(rescale=1./255)
+# datagen = ImageDataGenerator(rescale=1./255)
 
-data_generator = datagen.flow_from_directory(
-        data_dir,
-        target_size=(256, 256),
-        batch_size=64,
-        color_mode="grayscale",
-        class_mode=None,  # This is set to 'input' to return both X and Y images
-        classes=['blackAndWhite', 'real'])  # These are the subfolders containing X and Y images
+# data_generator = datagen.flow_from_directory(
+#         data_dir,
+#         target_size=(256, 256),
+#         batch_size=64,
+#         color_mode="grayscale",
+#         class_mode=None,  # This is set to 'input' to return both X and Y images
+#         classes=['blackAndWhite', 'real'])  # These are the subfolders containing X and Y images
 
 #Used for checking if the X and Y values are the intended images.
 
 
-print(data_generator[0].shape)
+X_batch, y_batch = imggen.__getitem__(0)
 
-#x_batch, y_batch = 
-
-
-# x_example = x_batch[63]
-# y_example = y_batch[63]
-
-# print(x_example.shape)
-# print(y_example.shape)
-
-# x_arr = np.squeeze(x_example)
-# y_arr = np.squeeze(y_example)
+print(X_batch.shape)
+print(y_batch.shape)
 
 
-# x_img = Image.fromarray(np.interp(x_arr, (x_arr.min(), x_arr.max()), (0, 255)).astype(np.uint8))
-# y_img = Image.fromarray(np.interp(y_arr, (y_arr.min(), y_arr.max()), (0, 255)).astype(np.uint8))
-# x_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/X.jpeg")
-# y_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/Y.jpeg")
+x_example = X_batch[0, :, :, 0] * 255
+y_example = y_batch[0, :, :, 0] * 255
+
+print(x_example.shape)
+print(y_example.shape)
+# print(y_example)
+
+x_arr = np.squeeze(x_example)
+y_arr = np.squeeze(y_example)
+
+print(x_arr.shape)
+print(y_arr.shape)
+
+# Ensure x_arr and y_arr are within the range [0, 255]
+x_arr = np.clip(x_arr, 0, 255)
+y_arr = np.clip(y_arr, 0, 255)
+
+# Normalize pixel values to the range [0, 255]
+x_norm = np.interp(x_arr, (x_arr.min(), x_arr.max()), (0, 255)).astype(np.uint8)
+y_norm = np.interp(y_arr, (y_arr.min(), y_arr.max()), (0, 255)).astype(np.uint8)
+
+# Create Pillow Image objects from the normalized arrays
+x_img = Image.fromarray(x_norm)
+y_img = Image.fromarray(y_norm)
+
+# Save X and Y images
+x_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/X.jpeg")
+y_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/Y.jpeg")
 
 # create model
 autoE = models.Sequential([
@@ -175,7 +190,7 @@ autoE = models.Sequential([
 
   layers.Flatten(),
   layers.Dense(1024, activation='relu'),
-  layers.Dense(512, activation='relu'),
+  layers.Dense(1024, activation='relu'),
   layers.Dense(1024, activation='relu'),
   # (1024, 1)
 
@@ -202,20 +217,12 @@ autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lear
 
 autoE.fit(imggen, epochs=10)
 
-pred = autoE.predict(data_generator)
+pred = autoE.predict(imggen)
 
 temp = pred[0]
 
-min_val = np.min(temp)
-max_val = np.max(temp)
-
 # Rescale the values to the range 0-255
-rescaled_data = (temp - min_val) * (255.0 / (max_val - min_val))
-
-# Convert the rescaled array to integers
-rescaled_data = rescaled_data.astype(np.uint8)
-
-#print(rescaled_data)
+rescaled_data = np.interp(temp, (temp.min(), temp.max()), (0, 255)).astype(np.uint8)
 
 # Create an image from the rescaled array
 img = Image.fromarray(np.squeeze(rescaled_data))
