@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models, utils
+from tensorflow.keras import layers, models, utils, callbacks
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import Sequence
 import numpy as np
@@ -185,26 +185,14 @@ y_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation
 # create model
 autoE = models.Sequential([
   #(256, 256, 1)
-  layers.Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(256, 256, 1)),
-  layers.MaxPooling2D((2, 2), padding='same'),
+  layers.Conv2D(32, (3, 3), strides=(2,2), activation='leaky_relu', padding='same', input_shape=(256, 256, 1)),
   #(128,128,32)
 
-  layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
-  layers.MaxPooling2D((2, 2), padding='same'),
+  layers.Conv2D(32, (3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(64, 64, 32)
 
-  layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
-  layers.MaxPooling2D((2, 2), padding='same'),
+  layers.Conv2D(32, (3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(32, 32, 32)
-
-  layers.Flatten(),
-  layers.Dense(1024, activation='relu'),
-  layers.Dense(1024, activation='relu'),
-  layers.Dense(1024, activation='relu'),
-  # (1024, 1)
-
-  layers.Reshape(target_shape=(32, 32, 1)),
-  # (32, 32, 1)
 
   layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
@@ -221,6 +209,8 @@ autoE = models.Sequential([
   layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')
   # (256, 256, 1)
 ])
+
+early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
 # mean_absolute_error or mean_squared_error
 autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.01))
