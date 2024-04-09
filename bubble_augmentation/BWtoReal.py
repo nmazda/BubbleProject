@@ -185,30 +185,29 @@ y_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation
 # create model
 autoE = models.Sequential([
   #(256, 256, 1)
-  layers.Conv2D(32, (3, 3), strides=(2,2), activation='leaky_relu', padding='same', input_shape=(256, 256, 1)),
+  layers.Conv2D(32, size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same', input_shape=(256, 256, 1)),
   #(128,128,32)
 
-  layers.Conv2D(32, (3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
+  layers.Conv2D(32, size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(64, 64, 32)
 
-  layers.Conv2D(32, (3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
+  layers.Conv2D(32, size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(32, 32, 32)
 
-  layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
-  layers.UpSampling2D((2, 2)),
+  layers.Conv2DTranspose(1, size=(2, 2), strides=(2,2), activation='relu', padding='same'),
   # (64, 64, 32)
 
-  layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
-  layers.UpSampling2D((2, 2)),
+  layers.Conv2DTranspose(1, size=(2, 2), strides=(2,2), activation='relu', padding='same'),
   # (128, 128, 32)
 
-  layers.Conv2D(32, (3, 3), activation='relu', padding='same'),
-  layers.UpSampling2D((2, 2)),
+  layers.Conv2DTranspose(1, size=(2, 2), strides=(2,2), activation='relu', padding='same'),
   # (256, 256, 32)
 
-  layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')
+  layers.Conv2D(1, size=(3, 3), activation='sigmoid', padding='same')
   # (256, 256, 1)
 ])
+
+autoE.summary()
 
 early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
