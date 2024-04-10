@@ -132,39 +132,13 @@ val_ids = list(range(len(val_files)))
 train_generator = DataGenerator(labels=train_files, list_IDs=train_ids, image_path=bw_dir, mask_path=real_dir)
 val_generator = DataGenerator(labels=val_files, list_IDs=val_ids, image_path=bw_dir, mask_path=real_dir)
     
-# imggen = DataGenerator(labels=fileNames, list_IDs=ids, image_path=bw_dir, mask_path=real_dir)
-
-# datagen = ImageDataGenerator(rescale=1./255)
-
-# data_generator = datagen.flow_from_directory(
-#         data_dir,
-#         target_size=(256, 256),
-#         batch_size=64,
-#         color_mode="grayscale",
-#         class_mode=None,  # This is set to 'input' to return both X and Y images
-#         classes=['blackAndWhite', 'real'])  # These are the subfolders containing X and Y images
-
-#Used for checking if the X and Y values are the intended images.
-
-
 X_batch, y_batch = train_generator.__getitem__(0)
-
-print(X_batch.shape)
-print(y_batch.shape)
-
 
 x_example = X_batch[0, :, :, 0] * 255
 y_example = y_batch[0, :, :, 0] * 255
 
-print(x_example.shape)
-print(y_example.shape)
-# print(y_example)
-
 x_arr = np.squeeze(x_example)
 y_arr = np.squeeze(y_example)
-
-print(x_arr.shape)
-print(y_arr.shape)
 
 # Ensure x_arr and y_arr are within the range [0, 255]
 x_arr = np.clip(x_arr, 0, 255)
@@ -190,6 +164,14 @@ autoE = models.Sequential([
   layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(32, 32, 32)
 
+  layers.Flatten(),
+  layers.Dense(2048, activation='leaky_relu'),
+  layers.Dense(1024, activation='leaky_relu'),
+  layers.Dense(1024, activation='leaky_relu'),
+  layers.Dense(1024, activation='leaky_relu'),
+  layers.Dense(2048, activation='leaky_relu'),
+  layers.Reshape((32, 32, 2)),
+
   #(32, 32, 32)
   layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
@@ -198,6 +180,7 @@ autoE = models.Sequential([
   layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
   # (256, 256, 32)
+
 
   layers.Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same')
   # (256, 256, 1)
@@ -209,14 +192,14 @@ autoE.summary()
 #early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
 # mean_absolute_error or mean_squared_error
-autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.01))
+autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
 
-history = autoE.fit(train_generator, validation_data=val_generator, epochs=10)
+history = autoE.fit(train_generator, validation_data=val_generator, epochs=20)
 
 
 
 #Get and predict a batch of images
-image = train_generator.__getitem__(0)
+image = val_generator.__getitem__(0)
 pred = autoE.predict(image[0])
 
 #Printing shape to ensure right size.
