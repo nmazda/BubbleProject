@@ -129,8 +129,8 @@ train_ids = list(range(len(train_files)))
 val_ids = list(range(len(val_files)))
 
 # Create DataGenerators for train and validation data
-train_generator = DataGenerator(labels=train_files, list_IDs=train_ids, image_path=bw_dir, mask_path=real_dir)
-val_generator = DataGenerator(labels=val_files, list_IDs=val_ids, image_path=bw_dir, mask_path=real_dir)
+train_generator = DataGenerator(labels=train_files, list_IDs=train_ids, image_path=bw_dir, mask_path=real_dir, batch_size=32)
+val_generator = DataGenerator(labels=val_files, list_IDs=val_ids, image_path=bw_dir, mask_path=real_dir, batch_size=32)
     
 X_batch, y_batch = train_generator.__getitem__(0)
 
@@ -165,12 +165,10 @@ autoE = models.Sequential([
   #(32, 32, 32)
 
   layers.Flatten(),
-  layers.Dense(2048, activation='leaky_relu'),
-  layers.Dense(1024, activation='leaky_relu'),
-  layers.Dense(1024, activation='leaky_relu'),
-  layers.Dense(1024, activation='leaky_relu'),
-  layers.Dense(2048, activation='leaky_relu'),
-  layers.Reshape((32, 32, 2)),
+  layers.Dense(4096, activation='leaky_relu'),
+  layers.Dense(4096, activation='leaky_relu'),
+  layers.Dense(4096, activation='leaky_relu'),
+  layers.Reshape((32, 32, 4)),
 
   #(32, 32, 32)
   layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
@@ -180,6 +178,7 @@ autoE = models.Sequential([
   layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
   # (256, 256, 32)
+
 
 
   layers.Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same')
