@@ -1,7 +1,7 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models, utils, callbacks
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import layers, models, callbacks
 from tensorflow.keras.utils import Sequence
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import cv2
@@ -185,47 +185,70 @@ y_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation
 # create model
 autoE = models.Sequential([
   #(256, 256, 1)
-  layers.Conv2D(32, size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same', input_shape=(256, 256, 1)),
-  #(128,128,32)
-
-  layers.Conv2D(32, size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
-  #(64, 64, 32)
-
-  layers.Conv2D(32, size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
+  layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same', input_shape=(256, 256, 1)),
+  layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
+  layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(32, 32, 32)
 
-  layers.Conv2DTranspose(1, size=(2, 2), strides=(2,2), activation='relu', padding='same'),
-  # (64, 64, 32)
-
-  layers.Conv2DTranspose(1, size=(2, 2), strides=(2,2), activation='relu', padding='same'),
-  # (128, 128, 32)
-
-  layers.Conv2DTranspose(1, size=(2, 2), strides=(2,2), activation='relu', padding='same'),
+  #(32, 32, 32)
+  layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
+  layers.UpSampling2D((2, 2)),
+  layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
+  layers.UpSampling2D((2, 2)),
+  layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
+  layers.UpSampling2D((2, 2)),
   # (256, 256, 32)
 
-  layers.Conv2D(1, size=(3, 3), activation='sigmoid', padding='same')
+  layers.Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same')
   # (256, 256, 1)
 ])
 
 autoE.summary()
 
-early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+#Early stopping, not sure if needs to be implemented just yet.
+#early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
 # mean_absolute_error or mean_squared_error
 autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.01))
 
-autoE.fit(train_generator, validation_data=val_generator, epochs=10)
+history = autoE.fit(train_generator, validation_data=val_generator, epochs=10)
 
-pred = autoE.predict(train_generator)
 
+
+#Get and predict a batch of images
+image = train_generator.__getitem__(0)
+pred = autoE.predict(image[0])
+
+#Printing shape to ensure right size.
+print(image[0].shape)
+print(image[1].shape)
 print(pred.shape)
 
-temp = pred[0]
+#Get the individual images
+arrPred = pred[0]
+arrX = image[0][0]
+arrY = image[1][0]
 
 # Rescale the values to the range 0-255
-rescaled_data = np.interp(temp, (temp.min(), temp.max()), (0, 255)).astype(np.uint8)
+rescaled_dataPred = np.interp(arrPred, (arrPred.min(), arrPred.max()), (0, 255)).astype(np.uint8)
+rescaled_dataX = np.interp(arrX, (arrX.min(), arrX.max()), (0, 255)).astype(np.uint8)
+rescaled_dataY = np.interp(arrY, (arrY.min(), arrY.max()), (0, 255)).astype(np.uint8)
 
 # Create an image from the rescaled array
-img = Image.fromarray(np.squeeze(rescaled_data))
+imgPred = Image.fromarray(np.squeeze(rescaled_dataPred))
+imgX = Image.fromarray(np.squeeze(rescaled_dataX))
+imgY = Image.fromarray(np.squeeze(rescaled_dataY))
 
-img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/test.jpeg")
+#Saving images to testPred, testX, testY
+imgPred.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/testPred.jpeg")
+imgX.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/testX.jpeg")
+imgY.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/testY.jpeg")
+
+#Plotting loss curve and saving to loss_curve.jpeg
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('AE model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'val'], loc='upper left')
+plt.savefig('/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation/runs/loss_curve.jpeg')
