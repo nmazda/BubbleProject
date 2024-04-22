@@ -86,6 +86,8 @@ class DataLoader(object):
         else:
             raise Exception(f"Invalid source path: {source_path}")
 
+def isOverlapping(bbox1, bbox2) -> bool:
+    return not (bbox1[0] >= bbox2[2] or bbox1[2] <= bbox2[0] or bbox1[1] >= bbox2[3] or bbox1[3] <= bbox2[1])
 
 def detect(
     config_path: Path,
@@ -112,6 +114,19 @@ def detect(
         #Sums total area of bubbles in image.
         mask_areas = np.sum(masks, axis=(1, 2))
         
+        
+
+        # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
+        hasOverlap = False
+        for bbox1 in bboxes:
+            for bbox2 in bboxes:
+                if (isOverlapping(bbox1, bbox2)):
+                    hasOverlap = True
+                    break
+            if (hasOverlap): break
+
+        if (hasOverlap): continue
+
         #Prints the calculated min and max area of bubbles
         print(
             f"{image_path} {len(masks)} bubbles detected"
