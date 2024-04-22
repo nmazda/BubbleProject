@@ -4,3 +4,4 @@ runs/train*
 runs/detect*
 bubble_augmentation/runs/*
 datasets/*
+local_copy/*

@@ -24,12 +24,10 @@ def generate_dist_path(name: str) -> Path:
     raise RuntimeError("Could not generate dist_path")
 
 def mirror(input_img):
-    print("Mirror")
     return ImageOps.mirror(input_img)
     
 
 def split(input_img, subsec):
-    print("Split")
     split = []
     # Creates image from np array
 

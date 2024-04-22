@@ -160,8 +160,8 @@ y_img.save("/home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation
 autoE = models.Sequential([
   #(256, 256, 1)
   layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same', input_shape=(256, 256, 1)),
-  layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
-  layers.Conv2D(32, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
+  layers.Conv2D(64, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
+  layers.Conv2D(128, kernel_size=(3, 3), strides=(2,2), activation='leaky_relu', padding='same'),
   #(32, 32, 32)
 
   layers.Flatten(),
@@ -171,15 +171,13 @@ autoE = models.Sequential([
   layers.Reshape((32, 32, 4)),
 
   #(32, 32, 32)
-  layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
+  layers.Conv2D(128, kernel_size=(3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
-  layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
+  layers.Conv2D(64, kernel_size=(3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
   layers.Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same'),
   layers.UpSampling2D((2, 2)),
   # (256, 256, 32)
-
-
 
   layers.Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same')
   # (256, 256, 1)
@@ -191,9 +189,9 @@ autoE.summary()
 #early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
 # mean_absolute_error or mean_squared_error
-autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
+autoE.compile(loss='mean_absolute_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
 
-history = autoE.fit(train_generator, validation_data=val_generator, epochs=20)
+history = autoE.fit(train_generator, validation_data=val_generator, epochs=50)
 
 
 

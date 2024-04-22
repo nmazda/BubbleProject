@@ -1,7 +1,7 @@
 # Mirror and Split
 ## Usage
 ```bash
-python ./MirrorAndSplit.py <-m> <-s [amount]> <input-dir> <output-dir>
+python ./mirrorAndSplit.py <-m> <-s [amount]> <input-dir> <output-dir>
 ```
 ### -m (Optional)
 Mirror, include argument if you want output to be mirrored along the vertical axis.
