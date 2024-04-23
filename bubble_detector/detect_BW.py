@@ -87,6 +87,9 @@ class DataLoader(object):
             raise Exception(f"Invalid source path: {source_path}")
 
 def isOverlapping(bbox1, bbox2) -> bool:
+    # Pixel/Screen Coordinates are apparently backwards in terms of +/- Y, where +Y goes lower on the screen.
+    # As such, B1 Top, means the "botto"m of the square, and B1 Bottom means "Top" of the square when imagining in cartesian plane
+    #            B1 Left >= B2 Right     B1 Right <= B2 Left    B1 Top >= B2 Bottom     B1 Bottom <= B2 Top 
     return not (bbox1[0] >= bbox2[2] or bbox1[2] <= bbox2[0] or bbox1[1] >= bbox2[3] or bbox1[3] <= bbox2[1])
 
 def detect(
@@ -113,8 +116,6 @@ def detect(
         
         #Sums total area of bubbles in image.
         mask_areas = np.sum(masks, axis=(1, 2))
-        
-        
 
         # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
         hasOverlap = False
@@ -149,6 +150,7 @@ def detect(
 
         #Saves mask_img to runs folder under its original name.
         mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
+    print("Done.")
 
 
 def main() -> None:
