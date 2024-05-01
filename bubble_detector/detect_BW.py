@@ -118,6 +118,11 @@ def detect(
         masks = masks[np.where(bboxes[:, 4] > score_thr)]
         bboxes = [bbox for bbox in bboxes if bbox[4] > score_thr]
 
+        if masks.size == 0:
+            k = k + 1
+            print(f"No Masks Found: Image {k}")
+            continue
+
         #Sums total area of bubbles in image.
         mask_areas = np.sum(masks, axis=(1, 2))        
 

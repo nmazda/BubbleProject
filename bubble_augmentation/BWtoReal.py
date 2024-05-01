@@ -11,9 +11,9 @@ from sklearn.model_selection import train_test_split
 
 tf.config.experimental.set_memory_growth(tf.config.list_physical_devices('GPU')[0], True)
 
-data_dir = '/home/iec/Documents/bubble_project/BubbleProject/datasets/'
-bw_dir = '/home/iec/Documents/bubble_project/BubbleProject/datasets/blackAndWhite/'
-real_dir = '/home/iec/Documents/bubble_project/BubbleProject/datasets/real/'
+data_dir = '/home/iec/Documents/bubble_project/BubbleProject/local_copy/'
+bw_dir = '/home/iec/Documents/bubble_project/BubbleProject/local_copy/blackAndWhite_split4/'
+real_dir = '/home/iec/Documents/bubble_project/BubbleProject/local_copy/real_split4/'
 
 class DataGenerator(Sequence):
     """Generates data for Keras
@@ -130,7 +130,7 @@ val_ids = list(range(len(val_files)))
 
 # Create DataGenerators for train and validation data
 train_generator = DataGenerator(labels=train_files, list_IDs=train_ids, image_path=bw_dir, mask_path=real_dir, batch_size=32)
-val_generator = DataGenerator(labels=val_files, list_IDs=val_ids, image_path=bw_dir, mask_path=real_dir, batch_size=32)
+val_generator = DataGenerator(labels=val_files, list_IDs=val_ids, image_path=bw_dir, mask_path=real_dir, batch_size=32, shuffle=False)
     
 X_batch, y_batch = train_generator.__getitem__(0)
 
@@ -189,7 +189,7 @@ autoE.summary()
 #early_stopping = callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
 # mean_absolute_error or mean_squared_error
-autoE.compile(loss='mean_absolute_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
+autoE.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001))
 
 history = autoE.fit(train_generator, validation_data=val_generator, epochs=50)
 
