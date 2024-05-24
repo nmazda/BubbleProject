@@ -25,7 +25,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument("--name", help="experiment name", type=str, default="")
     parser.add_argument(
-        "--score_thr", help="object confidence threshold for detection", type=float, default=0.998
+        "--score_thr", help="object confidence threshold for detection", type=float, default=0.94
     )
     parser.add_argument(
         "--device",
@@ -107,7 +107,7 @@ def detect(
 
     # Loads ref background img as img
     ref_background_arr = np.array(Image.open("/home/iec/Documents/bubble_project/BubbleProject/bubble_detector/req_files/Background.jpg"))
-    print(ref_background_arr)
+    ref_background_arr = cv2.cvtColor(ref_background_arr, cv2.COLOR_RGBA2RGB)
 
     k = 0
     for image, image_path in DataLoader(source_path):
@@ -138,10 +138,8 @@ def detect(
                 if i != j and isOverlapping(bbox1, bbox2):
                     overlap_idxs.add(i)
                     overlap_idxs.add(j)
-                    break
-
-        for idx in overlap_idxs:
-            
+                    
+        
 
         # Prints the calculated min and max area of bubbles
         print(
@@ -149,14 +147,18 @@ def detect(
             f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
         )
 
-        # model.show_result(
-        #     image,
-        #     result,
-        #     out_file=dist_path / image_path.name,
-        #     score_thr=score_thr,
-        #     text_color=TEXT_COLOR,
-        #     bbox_color=BBOX_COLOR,
-        # )
+        model.show_result(
+            image,
+            result,
+            out_file=dist_path / image_path.name,
+            score_thr=score_thr,
+            text_color=TEXT_COLOR,
+            bbox_color=BBOX_COLOR,
+        )
+
+        for idx in overlap_idxs:
+            # image[masks[idx] > 0] = 0
+            image[masks[idx] > 0] = ref_background_arr[masks[idx] > 0]
 
         #Combines all masks into one np array
         combined_mask = np.sum(masks, axis=0).astype(np.uint8)
@@ -166,6 +168,7 @@ def detect(
 
         #Creates an image from the combined_mask np array.
         mask_img = Image.fromarray(combined_mask)
+        org_img = Image.fromarray(image)
 
         #Converts mask_img to greyscale image.
         mask_img = mask_img.convert('L')
@@ -174,7 +177,9 @@ def detect(
         mask_img = ImageOps.invert(mask_img)
 
         #Saves mask_img to runs folder under its original name.
-        mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
+        # mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
+        org_img.save(f'{dist_path}/{image_path.stem}*.jpg')
+
 
 
 def main() -> None:
