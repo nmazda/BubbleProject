@@ -25,7 +25,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument("--name", help="experiment name", type=str, default="")
     parser.add_argument(
-        "--score_thr", help="object confidence threshold for detection", type=float, default=0.99
+        "--score_thr", help="object confidence threshold for detection", type=float, default=0.998
     )
     parser.add_argument(
         "--device",
@@ -105,6 +105,8 @@ def detect(
     model = init_detector(str(config_path), str(checkpoint_path), device=device)
     dist_path = generate_dist_path(name)
 
+    totBubblesDet = 0
+    detImages = 0
     k = 0
     for image, image_path in DataLoader(source_path):
         result = inference_detector(model, image)
@@ -140,6 +142,9 @@ def detect(
             hasOverlap = False
             print(f"Overlap Detected: Image {k}")
             continue
+
+        totBubblesDet = totBubblesDet + len(bboxes)
+        detImages = detImages + 1
 
         # Prints the calculated min and max area of bubbles
         print(
@@ -184,6 +189,7 @@ def detect(
         #Saves mask_img to runs folder under its original name.
         mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
     print("Done.")
+    print(f"Total Out Imgs: {detImages}, Total Out Bubbles: {totBubblesDet}, Avg Out Bubbles: {totBubblesDet / detImages}")
 
 
 def main() -> None:
