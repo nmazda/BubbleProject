@@ -105,8 +105,10 @@ def detect(
     model = init_detector(str(config_path), str(checkpoint_path), device=device)
     dist_path = generate_dist_path(name)
 
-    totBubblesDet = 0
-    detImages = 0
+    # Loads ref background img as img
+    ref_background_arr = np.array(Image.open("/home/iec/Documents/bubble_project/BubbleProject/bubble_detector/req_files/Background.jpg"))
+    print(ref_background_arr)
+
     k = 0
     for image, image_path in DataLoader(source_path):
         result = inference_detector(model, image)
@@ -126,25 +128,20 @@ def detect(
             continue
 
         #Sums total area of bubbles in image.
-        mask_areas = np.sum(masks, axis=(1, 2))        
+        mask_areas = np.sum(masks, axis=(1, 2))   
+
+        overlap_idxs = set()    
 
         # # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
-        hasOverlap = False
         for i, bbox1 in enumerate(bboxes):
             for j, bbox2 in enumerate(bboxes):
                 if i != j and isOverlapping(bbox1, bbox2):
-                    hasOverlap = True
+                    overlap_idxs.add(i)
+                    overlap_idxs.add(j)
                     break
-            if (hasOverlap): break
 
-        k = k + 1
-        if (hasOverlap): 
-            hasOverlap = False
-            print(f"Overlap Detected: Image {k}")
-            continue
-
-        totBubblesDet = totBubblesDet + len(bboxes)
-        detImages = detImages + 1
+        for idx in overlap_idxs:
+            
 
         # Prints the calculated min and max area of bubbles
         print(
@@ -161,18 +158,8 @@ def detect(
         #     bbox_color=BBOX_COLOR,
         # )
 
+        #Combines all masks into one np array
         combined_mask = np.sum(masks, axis=0).astype(np.uint8)
-
-        #print(np.any(combined_mask >= 2))
-
-        # If two bubble's masks overlap
-        # if (np.any(combined_mask >= 2)):
-        #     continue
-
-        print(
-            f"{image_path} {len(masks)} bubbles detected"
-            f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
-        )
 
         #Replaces all values non 0 in np array with 255.
         combined_mask[combined_mask > 0 ] = 255
@@ -188,8 +175,6 @@ def detect(
 
         #Saves mask_img to runs folder under its original name.
         mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
-    print("Done.")
-    print(f"Total Out Imgs: {detImages}, Total Out Bubbles: {totBubblesDet}, Avg Out Bubbles: {totBubblesDet / detImages}")
 
 
 def main() -> None:
