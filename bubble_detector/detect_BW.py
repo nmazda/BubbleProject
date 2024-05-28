@@ -18,6 +18,8 @@ BBOX_COLOR = (72, 101, 241)
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument('--overlap_det', dest='overlap_det', action='store_true')
+    parser.add_argument('--ono_out', dest='ono_out', action='store_true')
     parser.add_argument("config_path", help="path to config file", type=Path)
     parser.add_argument("checkpoint_path", help="path to checkpoint path", type=Path)
     parser.add_argument(
@@ -90,11 +92,41 @@ def isOverlapping(bbox1, bbox2) -> bool:
     # Pixel/Screen Coordinates are apparently backwards in terms of +/- Y, where +Y goes lower on the screen.
     # As such, B1 Top, means the "botto"m of the square, and B1 Bottom means "Top" of the square when imagining in cartesian plane
     #            B1 Left >= B2 Right     B1 Right <= B2 Left    B1 Top >= B2 Bottom     B1 Bottom <= B2 Top 
-    # print(bbox1)
-    # print(bbox2)
     return not (bbox1[0] > bbox2[2] or bbox1[2] < bbox2[0] or bbox1[1] > bbox2[3] or bbox1[3] < bbox2[1])
 
+def overlapDetection(masks, bboxes, image, ref_background_arr):
+    overlap_idxs = set()    
+
+    # # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
+    for i, bbox1 in enumerate(bboxes):
+        for j, bbox2 in enumerate(bboxes):
+            if i != j and isOverlapping(bbox1, bbox2):
+                overlap_idxs.add(i)
+                overlap_idxs.add(j)
+
+    non_overlap_org_img = np.copy(image)
+
+    for idx in overlap_idxs:
+        binary_mask = masks[idx].astype(np.uint8)
+
+        # Kernel used to "blur" or "expand" the range of the bubble to cover the edges.
+        kernel = np.ones((5, 5), np.uint8)
+
+        # Dialated Mask for where the bubble is.
+        dilated_mask = cv2.dilate(binary_mask, kernel, iterations=1)
+
+        # Replace detected overlaps with the respective area in the background.
+        non_overlap_org_img[dilated_mask > 0] = ref_background_arr[dilated_mask > 0]
+
+    # Removes Overlaping Idxs from masks and bboxes
+    non_overlap_indices = [i for i in range(len(masks)) if i not in overlap_idxs]
+    masks = masks[non_overlap_indices]
+
+    return non_overlap_org_img
+
 def detect(
+    overlap_det: bool,
+    ono_out: bool,
     config_path: Path,
     checkpoint_path: Path,
     source_path: Path,
@@ -102,6 +134,8 @@ def detect(
     score_thr: float,
     device: str,
 ) -> None:
+    print(overlap_det)
+
     model = init_detector(str(config_path), str(checkpoint_path), device=device)
     dist_path = generate_dist_path(name)
 
@@ -123,68 +157,67 @@ def detect(
         bboxes = [bbox for bbox in bboxes if bbox[4] > score_thr]
 
         if masks.size == 0:
-            k = k + 1
             print(f"No Masks Found: Image {k}")
             continue
 
-        #Sums total area of bubbles in image.
-        mask_areas = np.sum(masks, axis=(1, 2))   
+        if (False):
+            model.show_result(
+                image,
+                result,
+                out_file=dist_path / image_path.name,
+                score_thr=score_thr,
+                text_color=TEXT_COLOR,
+                bbox_color=BBOX_COLOR,
+            )
 
-        overlap_idxs = set()    
+        if (overlap_det):
+            # Returns non-overlapping org img, and clears masks of overlapping bubbles
+            non_overlap_org_img = overlapDetection(masks, bboxes, image, ref_background_arr)
 
-        # # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
-        for i, bbox1 in enumerate(bboxes):
-            for j, bbox2 in enumerate(bboxes):
-                if i != j and isOverlapping(bbox1, bbox2):
-                    overlap_idxs.add(i)
-                    overlap_idxs.add(j)
-                    
-        
+        # #Sums total area of bubbles in image.
+        # mask_areas = np.sum(masks, axis=(1, 2))       
+        # # Prints the calculated min and max area of bubbles
+        # print(
+        #     f"{image_path} {len(masks)} bubbles detected"
+        #     f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
+        # )
 
-        # Prints the calculated min and max area of bubbles
-        print(
-            f"{image_path} {len(masks)} bubbles detected"
-            f"(max area: {np.max(mask_areas)}[px^2], min area: {np.min(mask_areas)}[px^2])"
-        )
+        # # Removes Overlaping Idxs from masks and bboxes
+        # non_overlap_indices = [i for i in range(len(masks)) if i not in overlap_idxs]
+        # masks = masks[non_overlap_indices]
+        # # bboxes = bboxes[non_overlap_indices]
 
-        model.show_result(
-            image,
-            result,
-            out_file=dist_path / image_path.name,
-            score_thr=score_thr,
-            text_color=TEXT_COLOR,
-            bbox_color=BBOX_COLOR,
-        )
-
-        for idx in overlap_idxs:
-            # image[masks[idx] > 0] = 0
-            image[masks[idx] > 0] = ref_background_arr[masks[idx] > 0]
-
-        #Combines all masks into one np array
+        #Combines all masks into one np array (combined_mask)
+        #Replaces all values non 0 in np array with 255 (combined_mask)
+        #Creates an image from the combined_mask np array (Both combined_mask -> mask_img & image -> image)
+        #Converts mask_img to greyscale image (mask_img)
+        #Invert Image (mask_img)
         combined_mask = np.sum(masks, axis=0).astype(np.uint8)
-
-        #Replaces all values non 0 in np array with 255.
         combined_mask[combined_mask > 0 ] = 255
-
-        #Creates an image from the combined_mask np array.
         mask_img = Image.fromarray(combined_mask)
-        org_img = Image.fromarray(image)
-
-        #Converts mask_img to greyscale image.
+        image = Image.fromarray(image)
         mask_img = mask_img.convert('L')
-
-        #Invert Image
         mask_img = ImageOps.invert(mask_img)
 
         #Saves mask_img to runs folder under its original name.
         # mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
-        org_img.save(f'{dist_path}/{image_path.stem}*.jpg')
+        mask_img.save(f'{dist_path}/{image_path.stem}_mask.jpg')
+        image.save(f'{dist_path}/{image_path.stem}_org.jpg')
 
+        if (overlap_det):
+            non_overlap_org_img = Image.fromarray(non_overlap_org_img)
+            non_overlap_org_img.save(f'{dist_path}/{image_path.stem}_non_overlap.jpg')
+
+        # Prints current Image number
+        print(f"Image #{k}: {image_path.stem}")
+        k = k+1
 
 
 def main() -> None:
     args = get_args()
     detect(
+        args.overlap_det,
+        args.ono_out,
         args.config_path,
         args.checkpoint_path,
         args.source_path,
