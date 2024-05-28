@@ -26,7 +26,7 @@ The general mask/bounding box detection is done through mmdetection, as that was
 ### Setup of ONO Detection app
 [Here is the setup for the ONO Detection app](https://github.com/nmazda/BubbleProject/blob/main/ONOSETUP.md)
 
-### Data Augmentation
+### Mirror and Split data augmentation
 [Here is how to use the data augmentation file]()
 
-Testing1
+### Bash Script Usage
