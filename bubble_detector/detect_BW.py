@@ -27,7 +27,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument("--name", help="experiment name", type=str, default="")
     parser.add_argument(
-        "--score_thr", help="object confidence threshold for detection", type=float, default=0.94
+        "--score_thr", help="object confidence threshold for detection", type=float, default=0.96
     )
     parser.add_argument(
         "--device",
@@ -134,8 +134,6 @@ def detect(
     score_thr: float,
     device: str,
 ) -> None:
-    print(overlap_det)
-
     model = init_detector(str(config_path), str(checkpoint_path), device=device)
     dist_path = generate_dist_path(name)
 
@@ -160,7 +158,7 @@ def detect(
             print(f"No Masks Found: Image {k}")
             continue
 
-        if (False):
+        if (ono_out):
             model.show_result(
                 image,
                 result,
