@@ -34,7 +34,7 @@ As such we have opted for a different approach. This new approach utilizes a ref
 ![Brief diagram displaying how overlap detection currently works](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_detection.jpg)
 
 This allows for a significant increase in the number of images output and a much cleaner image than other techniques. However, in some cases, we feel there can still be additional bubbles kept. To do this we will take a heuristic approach to run through a group of overlapping bubbles from largest to smallest and keep the first that is still detected as a proper bubble by the detection program, likely being the largest bubble closest to the foreground. A diagram of this is below.
-![Diagram showing the new heuristic approach to overlap detection]([http://url/to/img.pn](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_heuristic.jpg)g)
+![Diagram showing the new heuristic approach to overlap detection](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_heuristic.jpg)
 
 ### Mirror and Split data augmentation
 [Here is how to use the data augmentation file]()
