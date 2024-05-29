@@ -31,10 +31,10 @@ The general mask/bounding box detection is done through mmdetection, as that was
 Overlap detection is used during the Ono detection in order to help reduce the number of overlapping bubbles in the training data for the autoencoder. The original implementation of the overlap detection would iteratively run through every pairing of bubbles and check their bounding boxes for overlap, and if any overlapped the image would be thrown out and no mask produced. This however led to a very small number of images being output, as most images had some form of overlap, or there was an issue with bubble hallucinations/non-detected bubbles, which led to this lack of output.
 
 As such we have opted for a different approach. This new approach utilizes a reference image with a clear background to 'erase' the overlapping bubbles (Diagram Below)
-![Brief diagram displaying how overlap detection currently works](http://url/to/img.png)
+![Brief diagram displaying how overlap detection currently works](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_detection.jpg)
 
 This allows for a significant increase in the number of images output and a much cleaner image than other techniques. However, in some cases, we feel there can still be additional bubbles kept. To do this we will take a heuristic approach to run through a group of overlapping bubbles from largest to smallest and keep the first that is still detected as a proper bubble by the detection program, likely being the largest bubble closest to the foreground. A diagram of this is below.
-![Diagram showing the new heuristic approach to overlap detection](http://url/to/img.png)
+![Diagram showing the new heuristic approach to overlap detection]([http://url/to/img.pn](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_heuristic.jpg)g)
 
 ### Mirror and Split data augmentation
 [Here is how to use the data augmentation file]()
