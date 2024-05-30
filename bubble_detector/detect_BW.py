@@ -88,38 +88,111 @@ class DataLoader(object):
         else:
             raise Exception(f"Invalid source path: {source_path}")
 
+# Returns true if the two bboxes overlap
 def isOverlapping(bbox1, bbox2) -> bool:
     # Pixel/Screen Coordinates are apparently backwards in terms of +/- Y, where +Y goes lower on the screen.
     # As such, B1 Top, means the "botto"m of the square, and B1 Bottom means "Top" of the square when imagining in cartesian plane
     #            B1 Left >= B2 Right     B1 Right <= B2 Left    B1 Top >= B2 Bottom     B1 Bottom <= B2 Top 
     return not (bbox1[0] > bbox2[2] or bbox1[2] < bbox2[0] or bbox1[1] > bbox2[3] or bbox1[3] < bbox2[1])
 
-def overlapDetection(masks, bboxes, image, ref_background_arr):
-    overlap_idxs = set()    
+# Returns the area of a bbox
+def getArea(bbox) -> int:
+    # Bbox area = (right - left) * (top - bottom)
+    return (bbox[2] - bbox[0]) * (bbox[3] - bbox[1])
 
-    # # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
-    for i, bbox1 in enumerate(bboxes):
-        for j, bbox2 in enumerate(bboxes):
-            if i != j and isOverlapping(bbox1, bbox2):
-                overlap_idxs.add(i)
-                overlap_idxs.add(j)
+# Builds a graph of bubble bboxes
+def build_graph(bboxes):
+    n = len(bboxes)
+    graph = {i: [] for i in range(n)}
+    for i in range(n):
+        for j in range(i + 1, n):
+            if isOverlapping(bboxes[i], bboxes[j]):
+                graph[i].append(j)
+                graph[j].append(i)
+    return graph
+
+# Finds all connected 'nodes' in the 'graph' of overlapping bboxes
+def find_connected_components(graph):
+    visited = set()
+    components = []
+    
+    def dfs(node, component):
+        stack = [node]
+        while stack:
+            current = stack.pop()
+            if current not in visited:
+                visited.add(current)
+                component.append(current)
+                for neighbor in graph[current]:
+                    if neighbor not in visited:
+                        stack.append(neighbor)
+    
+    for node in graph:
+        if node not in visited:
+            component = []
+            dfs(node, component)
+            components.append(component)
+    
+    return components
+
+def overlapDetection(masks, bboxes, image, ref_background_arr, model):
+    # overlap_idxs = set()    
+
+    # # # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
+    # for i, bbox1 in enumerate(bboxes):
+    #     for j, bbox2 in enumerate(bboxes):
+    #         if i != j and isOverlapping(bbox1, bbox2):
+    #             if (getArea(bbox1) > getArea(bbox2)):
+    #                 overlap_idxs.add(j)
+    #             else:
+    #                 overlap_idxs.add(i)
+
+    bubble_graph = build_graph(bboxes)
+    overlap_bubbles = find_connected_components(bubble_graph)
+    print(overlap_bubbles)
 
     non_overlap_org_img = np.copy(image)
 
-    for idx in overlap_idxs:
-        binary_mask = masks[idx].astype(np.uint8)
+    # Decides which bubbles from each group to keep based on which is largest(by bbox)
+    overlap_bubbles_keep = set()
+    for group in overlap_bubbles:
+        # If group is of size one, no need to check for largest area, just add and continue.
+        if (len(group) == 1):
+            overlap_bubbles_keep.add(group[0])
+        # Else add bubble from group with largest size
+        else:
+            largest_bubble_idx = 0
+            maxArea = getArea(bboxes[0])
 
-        # Kernel used to "blur" or "expand" the range of the bubble to cover the edges.
-        kernel = np.ones((5, 5), np.uint8)
+            for idx in group:
+                if (getArea(bboxes[idx]) > maxArea):
+                    maxArea = getArea(bboxes[idx])
+                    largest_bubble_idx = idx
+            overlap_bubbles_keep.add(largest_bubble_idx)
+            
+    # # Transforms graph to set form
+    # overlap_bubbles_remove = set()
+    # for node, neighbors in overlap_bubbles.items():
+    #     if len(neighbors) > 1:
+    #         overlap_bubbles_remove.add(node)
+    #         overlap_bubbles_remove.update(neighbors)
 
-        # Dialated Mask for where the bubble is.
-        dilated_mask = cv2.dilate(binary_mask, kernel, iterations=1)
+    # Removes bubbles in overlap_bubbles_remove which arent in overlap_bubbles_keep
+    for idx in masks:
+        if not idx in overlap_bubbles_keep:
+            binary_mask = masks[idx].astype(np.uint8)
 
-        # Replace detected overlaps with the respective area in the background.
-        non_overlap_org_img[dilated_mask > 0] = ref_background_arr[dilated_mask > 0]
+            # Kernel used to "blur" or "expand" the range of the bubble to cover the edges.
+            kernel = np.ones((5, 5), np.uint8)
+
+            # Dialated Mask for where the bubble is.
+            dilated_mask = cv2.dilate(binary_mask, kernel, iterations=1)
+
+            # Replace detected overlaps with the respective area in the background.
+            non_overlap_org_img[dilated_mask > 0] = ref_background_arr[dilated_mask > 0]        
 
     # Removes Overlaping Idxs from masks and bboxes
-    non_overlap_indices = [i for i in range(len(masks)) if i not in overlap_idxs]
+    non_overlap_indices = [i for i in range(len(masks)) if i not in overlap_bubbles_keep]
     masks = masks[non_overlap_indices]
 
     return non_overlap_org_img
@@ -170,7 +243,7 @@ def detect(
 
         if (overlap_det):
             # Returns non-overlapping org img, and clears masks of overlapping bubbles
-            non_overlap_org_img = overlapDetection(masks, bboxes, image, ref_background_arr)
+            non_overlap_org_img = overlapDetection(masks, bboxes, image, ref_background_arr, model)
 
         # #Sums total area of bubbles in image.
         # mask_areas = np.sum(masks, axis=(1, 2))       
