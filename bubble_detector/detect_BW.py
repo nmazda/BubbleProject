@@ -156,19 +156,14 @@ def overlapDetection(masks, bboxes, image, ref_background_arr, model):
     # Decides which bubbles from each group to keep based on which is largest(by bbox)
     overlap_bubbles_keep = set()
     for group in overlap_bubbles:
-        # If group is of size one, no need to check for largest area, just add and continue.
-        if (len(group) == 1):
-            overlap_bubbles_keep.add(group[0])
-        # Else add bubble from group with largest size
-        else:
-            largest_bubble_idx = 0
-            maxArea = getArea(bboxes[0])
+        largest_bubble_idx = 0
+        maxArea = getArea(bboxes[0])
 
-            for idx in group:
-                if (getArea(bboxes[idx]) > maxArea):
-                    maxArea = getArea(bboxes[idx])
-                    largest_bubble_idx = idx
-            overlap_bubbles_keep.add(largest_bubble_idx)
+        for idx in group:
+            if (getArea(bboxes[idx]) > maxArea):
+                maxArea = getArea(bboxes[idx])
+                largest_bubble_idx = idx
+        overlap_bubbles_keep.add(largest_bubble_idx)
             
     # # Transforms graph to set form
     # overlap_bubbles_remove = set()
