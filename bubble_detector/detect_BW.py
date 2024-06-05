@@ -135,45 +135,71 @@ def find_connected_components(graph):
     
     return components
 
-def overlapDetection(masks, bboxes, image, ref_background_arr, model):
-    # overlap_idxs = set()    
+#Method for deciding which bubble to keep out of a group of overlapping bubbles
+# List bubbles in order of largest to smallest in arr
+# Remove all but x(largest) from image
+# Detect x's bounding box for a bubble, if one found, return x idx
+# Otherwise, set x to next largest and repeat.
+# If none are detected, simly return the largest.
+def keepBubble(group, bboxes, image, model, score_thr):
+    bubbleSizes = []
+    for idx in group:
+        print(f"Index: {idx}")
+        bubbleSizes.append((idx, getArea(bboxes[idx])))
 
-    # # # Iterates through all bboxes and checks if theyre overlapping, if overlapping, skip the image saving process.
-    # for i, bbox1 in enumerate(bboxes):
-    #     for j, bbox2 in enumerate(bboxes):
-    #         if i != j and isOverlapping(bbox1, bbox2):
-    #             if (getArea(bbox1) > getArea(bbox2)):
-    #                 overlap_idxs.add(j)
-    #             else:
-    #                 overlap_idxs.add(i)
+    # Sort the bubbles by area in descending order
+    bubbleSizes.sort(key=lambda x: x[1], reverse=True)
+    print(bubbleSizes)
 
+    # Iterate through the sorted bubbles for further processing
+    for idx, area in bubbleSizes:
+        # Get the bounding box corresponding to the current index
+        bbox = bboxes[idx]
+        
+        # Crop the image using the bounding box
+        x_min, y_min, x_max, y_max = map(int, bbox[:4])
+        cropped_image = image[y_min:y_max, x_min:x_max]
+
+        # Run detection of bubble's bbox portion of the image
+        det_result = inference_detector(model, cropped_image)
+        det_bboxes, det_masks = det_result
+        det_bboxes = det_bboxes[0]
+        det_bboxes = [bbox for bbox in det_bboxes if bbox[4] > score_thr]
+
+        # Check if bubble was detected
+        if (len(det_bboxes) > 0): 
+            print(f"Detected: {idx}")
+            print(getArea(det_bboxes[:4]))
+            model.show_result(
+                cropped_image,
+                det_result,
+                out_file="/home/iec/Documents/bubble_project/BubbleProject/bubble_detector/runs/detect" / f"DetBubble{idx}",
+                score_thr=score_thr,
+                text_color=TEXT_COLOR,
+                bbox_color=BBOX_COLOR,
+            )
+            return idx
+
+    print(bubbleSizes[0][0])
+    return bubbleSizes[0][0]
+
+def overlapDetection(masks, bboxes, image, ref_background_arr, model, score_thr):
+    # Builds and creates a graph of all overlapping bubble groups
     bubble_graph = build_graph(bboxes)
     overlap_bubbles = find_connected_components(bubble_graph)
     print(overlap_bubbles)
 
+    # Copies the image so we can keep the original image for testing.
     non_overlap_org_img = np.copy(image)
 
     # Decides which bubbles from each group to keep based on which is largest(by bbox)
     overlap_bubbles_keep = set()
     for group in overlap_bubbles:
-        largest_bubble_idx = 0
-        maxArea = getArea(bboxes[0])
-
-        for idx in group:
-            if (getArea(bboxes[idx]) > maxArea):
-                maxArea = getArea(bboxes[idx])
-                largest_bubble_idx = idx
-        overlap_bubbles_keep.add(largest_bubble_idx)
-            
-    # # Transforms graph to set form
-    # overlap_bubbles_remove = set()
-    # for node, neighbors in overlap_bubbles.items():
-    #     if len(neighbors) > 1:
-    #         overlap_bubbles_remove.add(node)
-    #         overlap_bubbles_remove.update(neighbors)
+        print(keepBubble(group, bboxes, image, model, score_thr))
+        overlap_bubbles_keep.add(keepBubble(group, bboxes, image, model, score_thr))
 
     # Removes bubbles in overlap_bubbles_remove which arent in overlap_bubbles_keep
-    for idx in masks:
+    for idx, mask in enumerate(masks):
         if not idx in overlap_bubbles_keep:
             binary_mask = masks[idx].astype(np.uint8)
 
@@ -216,6 +242,7 @@ def detect(
         bboxes, masks = result
 
         bboxes = bboxes[0]  # [x1, y1, x2, y2, score]
+
         masks = np.array(masks[0])  # mask image of the same size as the original image
 
         # Remove masks & bboxes where the bbox is 'unsure'/score < score_threshold
@@ -238,7 +265,7 @@ def detect(
 
         if (overlap_det):
             # Returns non-overlapping org img, and clears masks of overlapping bubbles
-            non_overlap_org_img = overlapDetection(masks, bboxes, image, ref_background_arr, model)
+            non_overlap_org_img = overlapDetection(masks, bboxes, image, ref_background_arr, model, score_thr)
 
         # #Sums total area of bubbles in image.
         # mask_areas = np.sum(masks, axis=(1, 2))       
