@@ -1,5 +1,6 @@
 checkpoint.pth
 datasets/
 runs/detect*
+runs/test*
 runs/train*
 .ipynb_checkpoints
