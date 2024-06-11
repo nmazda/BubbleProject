@@ -6,6 +6,11 @@ The Bubble Project has the overarching goal of making data collection/generation
 
 As such we have developed a pipeline for this purpose, working through the following principles. First, we gather a smaller data set of realistic bubble images and use the ONO app, built off of mmdetection, to segment the image into masked bubbles. These bubbles are then converted into a black and white 'mask' which will then be used to train a separate neural network model. This model takes these black and white images as input and is trained to reconstruct the realistic images. Doing so allows us to take an existing simulation program for these bubbles, take large sets of image data from them, convert them to black and white, and instruct this neural network to convert them into realistic images. The end result is a large data set of tagged realistic images that can easily be used to train a future neural network model.
 
+## Black and White Autoencoder ##
+
+In order to create training data for a future neural network model, we train an autoencoder to take the created Black and White (B/W) images and convert them back into the original.
+This way, when taking any data, such as the non-realistic simulation data, and turning it black and white, we can output a realistic image by running it through this neural network model.
+
 ## Black and White Conversion ##
 
 Black and white conversion is necessary as it provides an easy middle ground for both the original training data of the autoencoder as well as the simulation data. Having this middle ground allows us to train the neural network to reconstruct the realistic data from the converted black-and-white realistic images and still be able to apply it to the simulation data once it's converted to black-and-white.
@@ -19,11 +24,6 @@ The general mask/bounding box detection is done through MMdetection, as the ONO 
 7. Using PIL, combined_mask is transformed into mask_img using Image.fromArray.
 8. mask_img is then converted to grey scale using .convert('L').
 9. mask_img is saved to the detect-* folder under its original name, now converted to black and white. 
-
-## Black and White Autoencoder ##
-
-In order to create training data for a future neural network model, we train an autoencoder to take the created Black and White (B/W) images and convert them back into the original.
-This way, when taking any data, such as the non-realistic simulation data, and turning it black and white, we can output a realistic image by running it through this neural network model.
 
 ## Setup of ONO app
 [Here is the setup for the ONO app](https://github.com/nmazda/BubbleProject/blob/main/ONOSETUP.md)
