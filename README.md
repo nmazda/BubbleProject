@@ -8,6 +8,8 @@ As such we have developed a pipeline for this purpose, working through the follo
 
 ## Black and White Conversion ##
 
+Black and white conversion is necessary as it provides an easy middle ground for both the original training data of the autoencoder as well as the simulation data. Having this middle ground allows us to train the neural network to reconstruct the realistic data from the converted black-and-white realistic images and still be able to apply it to the simulation data once it's converted to black-and-white.
+
 The general mask/bounding box detection is done through MMdetection, as the ONO Detection app was built on the framework. However, this program does not support outputting just the masks to an image, as such, the following actions are done for each image. 
 
 1. MMdetection is run, outputting the tuple "results" containing bboxes and masks.
