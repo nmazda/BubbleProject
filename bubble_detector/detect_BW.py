@@ -304,18 +304,20 @@ def detect(
         combined_mask = np.sum(masks, axis=0).astype(np.uint8)
         combined_mask[combined_mask > 0 ] = 255
         mask_img = Image.fromarray(combined_mask)
-        image = Image.fromarray(image)
         mask_img = mask_img.convert('L')
         mask_img = ImageOps.invert(mask_img)
 
         #Saves mask_img to runs folder under its original name.
         # mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
-        mask_img.save(f'{dist_path}/{image_path.stem}_mask.jpg')
-        image.save(f'{dist_path}/{image_path.stem}_org.jpg')
+        mask_img.save(f'{dist_path}/{image_path.stem}_BW.jpg')
 
         if (overlap_det):
             non_overlap_org_img = Image.fromarray(non_overlap_org_img)
             non_overlap_org_img.save(f'{dist_path}/{image_path.stem}_non_overlap.jpg')
+            image = Image.fromarray(image)
+            image.save(f'{dist_path}/{image_path.stem}_org.jpg')
+
+
 
         # Prints current Image number
         print(f"Image #{k}: {image_path.stem}")
