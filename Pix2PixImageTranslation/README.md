@@ -20,7 +20,9 @@
 #### Download datasets :
 - Download a dataset and save to datasets folder with subdirectories `A` and `B`, for example:
 ```bash
-./datasets/BubbleData
+./datasets/BubbleData        # /path/to/data
+./datasets/BubbleData/A      # /path/to/data/A
+./datasets/BubbleData/B      # /path/to/data/B
 ```
 - `A` and `B` should each have their own subdirectories `train`, `val`, `test`, etc. In `/path/to/data/A/train`, put training images in style A. In `/path/to/data/B/train`, put the corresponding images in style B. Repeat same for other data splits (`val`, `test`, etc)
 
