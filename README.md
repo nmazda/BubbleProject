@@ -14,7 +14,7 @@ We utilize a Generative Adversarial Network (GAN) called Pix2Pix for translating
 
 **Pix2Pix** 
 
-The Pix2Pix architecture consists of a generator that creates realistic images from input data and a discriminator that evaluates their authenticity. During adversarial training, the generator and discriminator are optimized together, improving the generator's ability to produce high-quality, realistic images.
+The Pix2Pix architecture consists of a generator that creates realistic images from input data and a discriminator that evaluates their authenticity. During adversarial training, the generator and discriminator are optimized together, improving the generator's ability to produce high-quality, realistic images. For more details please refer original [paper](https://arxiv.org/pdf/1611.07004).
 
 **Dataset Preparation**
 
@@ -22,7 +22,7 @@ To prepare our dataset for Pix2Pix training, we organized our data into paired i
 
 **Implementation and Output**
 
-In this project, we utilize PyTorch, a powerful deep learning framework. To delve deeper into the specifics of our training and testing methodologies, please refer to our documentation [here](Pix2PixImageTranslation/README.md). The output of our model comprises realistic bubble images with dimensions of 256x256 pixels. For additional insights into the Pix2Pix model, we recommend referring to the original [PyTorch implementation](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) and the [paper](https://arxiv.org/pdf/1611.07004) detailing its architecture.
+In this project, we utilize PyTorch, a powerful deep learning framework. To delve deeper into the specifics of our training and testing methodologies, please refer to our documentation [here](Pix2PixImageTranslation/README.md). The output of our model comprises realistic bubble images with dimensions of 256x256 pixels. For additional insights into the Pix2Pix model, we recommend referring to the original [PyTorch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) repository detailing its implementation.
 
 ### Black and White Autoencoder ##
 
