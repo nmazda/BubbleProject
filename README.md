@@ -10,6 +10,7 @@ As such we have developed a pipeline for this purpose, working through the follo
 
 ### GAN based Image Translation
 
+We utilize a Generative Adversarial Network (GAN) called Pix2Pix for translating black-and-white bubble images into realistic grayscale images. Pix2Pix is a popular image-to-image translation framework that uses paired images to learn the mapping between input and output images. This process helps us generate realistic grayscale images from simulation data, which can then be used to create a large dataset for training future neural networks.
 
 ### Black and White Autoencoder ##
 
