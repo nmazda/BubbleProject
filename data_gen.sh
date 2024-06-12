@@ -8,8 +8,8 @@ BW_SPLIT_OUT="/home/iec/Documents/bubble_project/BubbleProject/local_copy/bw_spl
 SRC_IMGS=$1
 SPLT_AMNT=$2
 CHPT=$3
-REAL_SPLIT_OUT=$4
-BW_SPLIT_OUT=$5
+# REAL_SPLIT_OUT=$4
+# BW_SPLIT_OUT=$5
 
 # Move to dir: bubble_detector
 cd /home/iec/Documents/bubble_project/BubbleProject/bubble_detector
