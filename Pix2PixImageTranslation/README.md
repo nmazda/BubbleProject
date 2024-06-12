@@ -1,11 +1,11 @@
 # Pix2Pix Image Translation
 
-### Prerequisites
+## Prerequisites
 - Linux or macOS
 - Python 3
 - CPU or NVIDIA GPU + CUDA CuDNN
 
-### Environment Setup
+## Environment Setup
 - Clone this repo and change directory
   ```
   https://github.com/nmazda/BubbleProject.git
@@ -15,7 +15,7 @@
 - For pip users, please type the command `pip install -r requirements.txt`
 - For Conda users, you can create a new Conda environment using `conda env create -f environment.yml`
 
-### Training & Testing 
+## Prepare Dataset 
 
 #### Download datasets :
 - Download a dataset and save to datasets folder with subdirectories `A` and `B`, for example:
@@ -24,7 +24,7 @@
 ```
 - `A` and `B` should each have their own subdirectories `train`, `val`, `test`, etc. In `/path/to/data/A/train`, put training images in style A. In `/path/to/data/B/train`, put the corresponding images in style B. Repeat same for other data splits (`val`, `test`, etc)
 
-#### Prepare datasets for pix2pix :
+#### Process datasets for pix2pix :
 - Pix2pix's training requires paired data. We provide a python script to generate training data in the form of pairs of images {A,B}, where A and B are two different depictions of the same underlying scene. For example, these might be pairs {label map, photo} or {bw image, color image}. 
 - Create folder `/path/to/data` with subdirectories `A` and `B`. `A` and `B` should each have their own subdirectories `train`, `val`, `test`, etc. In `/path/to/data/A/train`, put training images in style A. In `/path/to/data/B/train`, put the corresponding images in style B. Repeat same for other data splits (`val`, `test`, etc).
 - Corresponding images in a pair {A,B} must be the same size and have the same filename, e.g., `/path/to/data/A/train/1.jpg` is considered to correspond to `/path/to/data/B/train/1.jpg`.
@@ -35,6 +35,8 @@ python datasets/combine_A_and_B.py --fold_A /path/to/data/A --fold_B /path/to/da
 ```
 
 This will combine each pair of images (A,B) into a single image file, ready for training.
+
+## Training & Testing 
 
 #### Train the model:
 - To run the experiment multiple times use following bash script
