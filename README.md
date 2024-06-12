@@ -22,7 +22,7 @@ To prepare our dataset for Pix2Pix training, we organized our data into paired i
 
 **Implementation and Output**
 
-In this project, we utilize PyTorch, a powerful deep learning framework. To delve deeper into the specifics of our training and testing methodologies, please refer to our documentation [here](). The output of our model comprises realistic bubble images with dimensions of 256x256 pixels. For additional insights into the Pix2Pix model, we recommend referring to the original [PyTorch implementation](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) and the [paper](https://arxiv.org/pdf/1611.07004) detailing its architecture.
+In this project, we utilize PyTorch, a powerful deep learning framework. To delve deeper into the specifics of our training and testing methodologies, please refer to our documentation [here](Pix2PixImageTranslation/README.md). The output of our model comprises realistic bubble images with dimensions of 256x256 pixels. For additional insights into the Pix2Pix model, we recommend referring to the original [PyTorch implementation](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) and the [paper](https://arxiv.org/pdf/1611.07004) detailing its architecture.
 
 ### Black and White Autoencoder ##
 
