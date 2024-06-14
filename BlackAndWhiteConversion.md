@@ -1,0 +1,5 @@
+# Black and White Conversion
+
+The process of black and white conversion from realistic images is carried out in two parts. The first part, primarily handled by mmdetection, does the heavy lifting of detecting each individual bubble in an image and out putting an array of bounding boxes and masks for each set of bubbles. The second half however is priamrily post processing and getting the format we need the bubbles in.
+
+The first step in this process is to take the output masks from mmdetection and combine them into one np array, effectivly giving us a binary array where a 1 means that pixel is apart of a bubble, and a 0 meaning it is not. This np array is the converted to an image format using PIL, also known as Pillow, which we can then specifiy we want the output image to be greyscale and then save to a specific directory.
