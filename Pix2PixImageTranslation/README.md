@@ -43,6 +43,7 @@ This will combine each pair of images (A,B) into a single image file, ready for 
 #### Train the model:
 - To run the experiment multiple times use following bash script
 ```bash
+chmod +x train_pix2pix.sh 
 ./train_pix2pix.sh --dataroot ./datasets/BubbleData --name bubble_pix2pix --runs 10
 ```
 - To directly run the python file use following command
