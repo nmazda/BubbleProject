@@ -27,7 +27,7 @@ def get_args() -> argparse.Namespace:
     )
     parser.add_argument("--name", help="experiment name", type=str, default="")
     parser.add_argument(
-        "--score_thr", help="object confidence threshold for detection", type=float, default=0.96
+        "--score_thr", help="object confidence threshold for detection", type=float, default=0.4
     )
     parser.add_argument(
         "--device",
@@ -309,7 +309,7 @@ def detect(
 
         #Saves mask_img to runs folder under its original name.
         # mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
-        mask_img.save(f'{dist_path}/{image_path.stem}_BW.jpg')
+        mask_img.save(f'{dist_path}/{image_path.stem}.jpg')
 
         if (overlap_det):
             non_overlap_org_img = Image.fromarray(non_overlap_org_img)

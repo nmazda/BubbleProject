@@ -1,15 +1,12 @@
 #!/bin/bash
 
 RUNS_DIR="/home/iec/Documents/bubble_project/BubbleProject/bubble_detector/runs"
-REAL_SPLIT_OUT="/home/iec/Documents/bubble_project/BubbleProject/local_copy/real_split"
-BW_SPLIT_OUT="/home/iec/Documents/bubble_project/BubbleProject/local_copy/bw_split"
 
 # TODO: Need to actually use the arguments
 SRC_IMGS=$1
-SPLT_AMNT=$2
-CHPT=$3
-# REAL_SPLIT_OUT=$4
-# BW_SPLIT_OUT=$5
+SPLIT_OUT=$2
+SPLT_AMNT=$3
+CHPT=$4
 
 # Move to dir: bubble_detector
 cd /home/iec/Documents/bubble_project/BubbleProject/bubble_detector
@@ -29,8 +26,8 @@ fi
 
 # Runs MirrorAndSplit with both mirroring and non mirroring for both real and bw
 # Real Mirror then Non-Mirror
-python ./mirrorAndSplit.py -m -s $SPLT_AMNT $SRC_IMGS $REAL_SPLIT_OUT
-python ./mirrorAndSplit.py -s $SPLT_AMNT $SRC_IMGS $REAL_SPLIT_OUT
+python ./mirrorAndSplit.py -m -s $SPLT_AMNT $SRC_IMGS $SPLIT_OUT/real_split
+python ./mirrorAndSplit.py -s $SPLT_AMNT $SRC_IMGS $SPLIT_OUT/real_split
 
 if [ ! -d "$BW_SPLIT_OUT" ]; then
     echo "$BW_SPLIT_OUT does not exist. Creating it..."
@@ -38,5 +35,5 @@ if [ ! -d "$BW_SPLIT_OUT" ]; then
 fi
 
 # BW Mirror then Non-Mirror
-python ./mirrorAndSplit.py -m -s $SPLT_AMNT $MOST_RECENT_DETECT $BW_SPLIT_OUT
-python ./mirrorAndSplit.py -s $SPLT_AMNT $MOST_RECENT_DETECT $BW_SPLIT_OUT
+python ./mirrorAndSplit.py -m -s $SPLT_AMNT $MOST_RECENT_DETECT $SPLIT_OUT/bw_split
+python ./mirrorAndSplit.py -s $SPLT_AMNT $MOST_RECENT_DETECT $SPLIT_OUT/bw_split
