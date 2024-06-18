@@ -19,9 +19,9 @@ MOST_RECENT_DETECT=$(ls -td "$RUNS_DIR"/detect* 2>/dev/null | head -n 1)
 # Move to dir: bubble_augmentation
 cd /home/iec/Documents/bubble_project/BubbleProject/bubble_augmentation
 
-if [ ! -d "$REAL_SPLIT_OUT" ]; then
-    echo "$REAL_SPLIT_OUT does not exist. Creating it..."
-    mkdir -p "$REAL_SPLIT_OUT"
+if [ ! -d "$SPLIT_OUT/real_split" ]; then
+    echo "$SPLIT_OUT/real_split does not exist. Creating it..."
+    mkdir -p "$SPLIT_OUT/real_split"
 fi
 
 # Runs MirrorAndSplit with both mirroring and non mirroring for both real and bw
@@ -29,9 +29,9 @@ fi
 python ./mirrorAndSplit.py -m -s $SPLT_AMNT $SRC_IMGS $SPLIT_OUT/real_split
 python ./mirrorAndSplit.py -s $SPLT_AMNT $SRC_IMGS $SPLIT_OUT/real_split
 
-if [ ! -d "$BW_SPLIT_OUT" ]; then
-    echo "$BW_SPLIT_OUT does not exist. Creating it..."
-    mkdir -p "$BW_SPLIT_OUT"
+if [ ! -d "$SPLIT_OUT/bw_split" ]; then
+    echo "$SPLIT_OUT/bw_split does not exist. Creating it..."
+    mkdir -p "$SPLIT_OUT/bw_split"
 fi
 
 # BW Mirror then Non-Mirror
