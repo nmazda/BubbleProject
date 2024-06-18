@@ -64,3 +64,7 @@ This allows for a significant increase in the number of images output and a much
 
 
 ## Bash Script Usage
+The bash script will output two folders, bw_split and real_split to the path_to_output_directories directory. 
+```
+./data_gen.sh [path_to_input_images] [path_to_output_directories] [number_of_vertical_splits_in_output_image] [path_to_checkpoint_file]
+```
