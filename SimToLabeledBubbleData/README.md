@@ -8,7 +8,7 @@ The first step involves converting original images of size 1612x786 into squares
 
 ##### Execute following command to generate B&W images
 ```bash
-python prepare_bw_images.py
+python prepare_bw_images.py --input_dir path/to/input --output_dir path/to/output
 ```
 
 
@@ -32,7 +32,7 @@ In the final step, this script combines paired B&W and realistic images side by 
 
 ##### Execute following command to combine images and save single paired image
 ```bash
-python combine_paired_images.py
+python combine_paired_images.py --input_dir path/to/input --output_dir path/to/output
 ```
 This script processes images in the paired_images directory and saves the combined images to the combined_images directory.
 
