@@ -10,7 +10,8 @@ The first step involves converting original images of size 1612x786 into squares
 ```bash
 python prepare_bw_images.py
 ```
-![image](https://github.com/nmazda/BubbleProject/assets/47289953/6e6fef50-1a6f-4150-a716-fdd1fd2840bf)
+<img src="[img1](https://github.com/nmazda/BubbleProject/git_imgs/bw_to_realistic_img.png)" width="200" height="100">
+
 
 ## Step 2: Generating Realistic Images using Pix2Pix Model
 Using the prepared black and white (B&W) images, this step generates realistic images using a trained Pix2Pix model. The generated realistic images and the original B&W images are saved to a specified directory.
