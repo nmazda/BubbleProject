@@ -1,6 +1,10 @@
 # Simulation To Labeled Bubble Data
 
-This repository contains scripts for processing images in three main steps: converting original images to resized squares, generating realistic images using a Pix2Pix model, and combining paired images. Follow the instructions below to execute each step.
+This repository contains scripts for processing images in following main steps to generated labeled bubble data from Simulation images: 
+1) Converting original images to resized squares
+2) Generating realistic images using a Pix2Pix model 
+3) Combining paired images. Follow the instructions below to execute each step.
+4) ...
 
 ## Step 1: Converting Original Images to Resized Squares
 
