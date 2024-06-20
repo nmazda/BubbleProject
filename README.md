@@ -6,25 +6,25 @@ The Bubble Project has the overarching goal of making data collection/generation
 
 As such we have developed a pipeline for this purpose, working through the following principles. First, we gather a smaller data set of realistic bubble images and use the ONO app, built off of mmdetection, to segment the image into masked bubbles. These bubbles are then converted into a black and white 'mask' which will then be used to train a separate neural network model. This model takes these black and white images as input and is trained to reconstruct the realistic images. Doing so allows us to take an existing simulation program for these bubbles, take large sets of image data from them, convert them to black and white, and instruct this neural network to convert them into realistic images. The end result is a large data set of tagged realistic images that can easily be used to train a future neural network model.
 
-## Simulation to Real Bubble Translation
-
-### GAN based Image Translation
+## GAN based Image Translation ##
 
 We utilize a Generative Adversarial Network (GAN) called Pix2Pix for translating black-and-white bubble images into realistic grayscale images. Pix2Pix is a popular image-to-image translation framework that uses paired images to learn the mapping between input and output images. This process helps us generate realistic grayscale images from simulation data, which can then be used to create a large dataset for training future neural networks.
 
-**Pix2Pix** 
+### Pix2Pix
 
 The Pix2Pix architecture consists of a generator that creates realistic images from input data and a discriminator that evaluates their authenticity. During adversarial training, the generator and discriminator are optimized together, improving the generator's ability to produce high-quality, realistic images. For more details please refer original [paper](https://arxiv.org/pdf/1611.07004).
 
-**Dataset Preparation**
+### Dataset Preparation
 
 To prepare our dataset for Pix2Pix training, we organized our data into paired images {A, B} representing different depictions of the same scene. These pairs were stored in folders /path/to/data/A and /path/to/data/B, with corresponding subdirectories for different data splits. After ensuring that images in each pair had the same size and filename, we used a Python script to combine each pair into a single image file, ready for training. For training, input images are presented as paired images with dimensions of 256x256 pixels. Prior to training, we perform preprocessing steps on these input images, including resizing and cropping.
 
-**Implementation and Output**
+### Implementation and Output
+
+### Pipeline To Convert Simulation Images to Realistic Labeled Bubble Data
 
 In this project, we utilize PyTorch, a powerful deep learning framework. To delve deeper into the specifics of our training and testing methodologies, please refer to our documentation [here](Pix2PixImageTranslation/README.md). The output of our model comprises realistic bubble images with dimensions of 256x256 pixels. For additional insights into the Pix2Pix model, we recommend referring to the original [PyTorch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) repository detailing its implementation.
 
-### Black and White Autoencoder ##
+## Black and White Autoencoder ##
 
 In order to create training data for a future neural network model, we train an autoencoder to take the created Black and White (B/W) images and convert them back into the original.
 This way, when taking any data, such as the non-realistic simulation data, and turning it black and white, we can output a realistic image by running it through this neural network model.
