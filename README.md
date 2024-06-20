@@ -28,6 +28,8 @@ This pipeline processes simulation images to generate labeled bubble data throug
 
 Please refer to our documentation [here](https://github.com/nmazda/BubbleProject/blob/main/SimToLabeledBubbleData/README.md) for more details about the steps to execute the scripts.
 
+Note : Task for applying labels to realistic images is still in porcess
+
 ## Black and White Autoencoder ##
 
 In order to create training data for a future neural network model, we train an autoencoder to take the created Black and White (B/W) images and convert them back into the original.
