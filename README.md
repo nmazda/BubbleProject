@@ -26,7 +26,7 @@ In this project, we utilize PyTorch, a powerful deep learning framework. To delv
 
 This pipeline processes simulation images to generate labeled bubble data through a series of steps, including image conversion, realistic image generation using the Pix2Pix GAN image translation model, image combination, and labelling the bubbles in realistic images using labels from simulation. Initially, it converts original simulation images into smaller black and white (B&W) squares, resizing them to a standard size. Using a trained Pix2Pix model, it then generates realistic images from these B&W squares. The pipeline combines each pair of B&W and realistic images side by side, producing paired images. Finally, it applies the bubble labels from the simulation data to the generated realistic images, resulting in a fully labeled bubble dataset.
 
-Please refer to our documentation [here](Pix2PixImageTranslation/README.md) for more details about the steps to execute the scripts.
+Please refer to our documentation [here](https://github.com/nmazda/BubbleProject/blob/main/SimToLabeledBubbleData/README.md) for more details about the steps to execute the scripts.
 
 ## Black and White Autoencoder ##
 
