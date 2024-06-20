@@ -10,7 +10,9 @@ The first step involves converting original images of size 1612x786 into squares
 ```bash
 python prepare_bw_images.py
 ```
-<img src="[img1](https://github.com/nmazda/BubbleProject/git_imgs/bw_to_realistic_img.png)" width="200" height="100">
+
+
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/original_img_to_bw_sqrs.png" width="600" height="400">
 
 
 ## Step 2: Generating Realistic Images using Pix2Pix Model
@@ -21,7 +23,9 @@ Using the prepared black and white (B&W) images, this step generates realistic i
 python test.py --dataroot path/to/dataset --name model_name --model test --netG unet_256 --direction AtoB --dataset_mode single --norm batch
 ```
 Replace path/to/dataset with the path to your dataset, and model_name with the name of your trained Pix2Pix model. This script uses the specified model to generate realistic images from the B&W images.
-![image](https://github.com/nmazda/BubbleProject/assets/47289953/cb0c4a1a-383f-4a65-8ce5-c4eb77a5f9ec)
+
+
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/bw_to_realistic_img.png" width="600" height="400">
 
 ## Step 3: Combining Paired Images
 In the final step, this script combines paired B&W and realistic images side by side and saves the combined images to a new directory.
@@ -31,4 +35,6 @@ In the final step, this script combines paired B&W and realistic images side by 
 python combine_paired_images.py
 ```
 This script processes images in the paired_images directory and saves the combined images to the combined_images directory.
-![image](https://github.com/nmazda/BubbleProject/assets/47289953/0c794551-7610-4cbb-b7ad-14637237b01c)
+
+
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/combine_paired_imgs.png" width="600" height="400">
