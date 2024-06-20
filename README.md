@@ -14,11 +14,11 @@ We utilize a Generative Adversarial Network (GAN) called Pix2Pix for translating
 
 The Pix2Pix architecture consists of a generator that creates realistic images from input data and a discriminator that evaluates their authenticity. During adversarial training, the generator and discriminator are optimized together, improving the generator's ability to produce high-quality, realistic images. For more details please refer original [paper](https://arxiv.org/pdf/1611.07004).
 
-### Dataset Preparation
+#### Dataset Preparation
 
 To prepare our dataset for Pix2Pix training, we organized our data into paired images {A, B} representing different depictions of the same scene. These pairs were stored in folders /path/to/data/A and /path/to/data/B, with corresponding subdirectories for different data splits. After ensuring that images in each pair had the same size and filename, we used a Python script to combine each pair into a single image file, ready for training. For training, input images are presented as paired images with dimensions of 256x256 pixels. Prior to training, we perform preprocessing steps on these input images, including resizing and cropping.
 
-### Implementation and Output
+#### Implementation and Output
 
 In this project, we utilize PyTorch, a powerful deep learning framework. To delve deeper into the specifics of our training and testing methodologies, please refer to our documentation [here](Pix2PixImageTranslation/README.md). The output of our model comprises realistic bubble images with dimensions of 256x256 pixels. For additional insights into the Pix2Pix model, we recommend referring to the original [PyTorch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix) repository detailing its implementation.
 
