@@ -7,7 +7,7 @@ This repository contains scripts for processing images in following main steps t
 4) Combining paired images. Follow the instructions below to execute each step.
 5) ...
 
-## Step 1: Converting Original Images to Resized Squares
+## Step 1: Read simulation data from .dat files and visualize
 
 This project involves visualizing data from bubble simulations. The data is stored in 77 .dat files, each corresponding to a snapshot of the simulation. Each file contains a large binary dataset that represents a 3D grid of values. The main goal of the project is to identify and isolate bubble locations within this 3D space and then generate black-and-white images from the Y-Z perspective.
 
