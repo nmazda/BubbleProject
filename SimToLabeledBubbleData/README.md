@@ -17,10 +17,14 @@ Each .dat file contains 204,800,000 bits of data, saved as uint32 dtype binary f
 Dimensions: 80 (X) x 80 (Y) x 1000 (Z)
 Data Type: uint32
 
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/sim_data_format.png" width="600" height="400">
+
 ##### Execute following command to visulize the simulation data
 ```bash
 python visualize_sim_data.py --input_dir path/to/input --output_dir path/to/output
 ```
+
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/read_visualize_sim_data.png" width="600" height="400">
 
 ## Step 2: Converting Original Images to Resized Squares
 
