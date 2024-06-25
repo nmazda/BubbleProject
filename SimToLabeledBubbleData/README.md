@@ -44,7 +44,7 @@ Using the prepared black and white (B&W) images, this step generates realistic i
 
 ##### Execute following command to generate realistic images from B&W images
 ```bash
-python test.py --dataroot path/to/dataset --name model_name --model test --netG unet_256 --direction AtoB --dataset_mode single --norm batch
+python test.py --dataroot path/to/dataset --name model_name --model test --netG unet_256 --direction AtoB --dataset_mode single --norm batch --num_test <no of images>
 ```
 Replace path/to/dataset with the path to your dataset, and model_name with the name of your trained Pix2Pix model. This script uses the specified model to generate realistic images from the B&W images.
 
