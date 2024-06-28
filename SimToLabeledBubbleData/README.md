@@ -34,7 +34,7 @@ pip install pyside2
 
 pip uninstall pyqt qt
 
-pip install mayavi
+pip install mayavi==4.8.1
 ```
 
 #### Execute following command to visulize the simulation data
