@@ -40,17 +40,17 @@ for file_name in os.listdir(input_dir):
             vol._volume_property.scalar_opacity_unit_distance = 10.0
 
             # Adjust opacity transfer function for transparency
-            vol._otf.add_point(data.min(), 0.0)
-            vol._otf.add_point(data.min() + 0.1 * (data.max() - data.min()), 0.0)
-            vol._otf.add_point(data.max() - 0.1 * (data.max() - data.min()), 1.0)
-            vol._otf.add_point(data.max(), 0.0)
+            # vol._otf.add_point(data.min(), 0.0)
+            # vol._otf.add_point(data.min() + 0.1 * (data.max() - data.min()), 0.0)
+            vol._otf.add_point(1060000000, 0.0)
+            # vol._otf.add_point(data.max(), 0.0)
 
             # Define a custom colormap (black and white)
             ctf = ColorTransferFunction()
             ctf.add_rgb_point(data.min(), 0.0, 0.0, 0.0)
-            ctf.add_rgb_point(data.min() + 0.1 * (data.max() - data.min()), 0.0, 0.0, 0.0)
-            ctf.add_rgb_point(data.max() - 0.1 * (data.max() - data.min()), 0.0, 0.0, 0.0)
-            ctf.add_rgb_point(data.max(), 0.0, 0.0, 0.0)
+            # ctf.add_rgb_point(data.min() + 0.1 * (data.max() - data.min()), 0.0, 0.0, 0.0)
+            # ctf.add_rgb_point(data.max() - 0.1 * (data.max() - data.min()), 0.0, 0.0, 0.0)
+            # ctf.add_rgb_point(data.max(), 0.0, 0.0, 0.0)
 
             vol._volume_property.set_color(ctf)
 
@@ -68,9 +68,10 @@ for file_name in os.listdir(input_dir):
             axes.label_text_property.bold = False
 
             save_path = os.path.join(output_dir, os.path.splitext(file_name)[0] + '.png')
-            mlab.savefig(save_path)
+            mlab.show()
+            # mlab.savefig(save_path)
             print(f"Image saved as {save_path}")
 
-            mlab.close(fig) 
+            # mlab.close(fig) 
         else:
             print(f"Data loading failed for file: {file_name}")
