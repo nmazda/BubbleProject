@@ -5,3 +5,5 @@ runs/detect*
 bubble_augmentation/runs/*
 datasets/*
 local_copy/*
+SimToLabeledBubbleData/VOFdata
+SimToLabeledBubbleData/Images

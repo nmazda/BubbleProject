@@ -42,6 +42,7 @@ for file_name in os.listdir(input_dir):
             # Adjust opacity transfer function for transparency
             # vol._otf.add_point(data.min(), 0.0)
             # vol._otf.add_point(data.min() + 0.1 * (data.max() - data.min()), 0.0)
+            vol._otf.
             vol._otf.add_point(1060000000, 0.0)
             # vol._otf.add_point(data.max(), 0.0)
 
