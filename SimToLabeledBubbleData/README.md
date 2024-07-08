@@ -93,7 +93,7 @@ python SimToLabeledBubbleData/draw_bbox.py --input_dir 'SimToLabeledBubbleData/R
 This scripts generated labelled data of bubble detection.
 
 
-<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/fl_0_0450_10_xz.png" width="600" height="400">
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/fl_0_0450_10_xz.png" >
 
 
 ## [Optional]: Combining Paired Images
