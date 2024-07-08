@@ -4,8 +4,8 @@ This repository contains scripts for processing images in following main steps t
 1) Read simulation data from .dat files and visualize
 2) Converting original images to resized squares
 3) Generating realistic images using a Pix2Pix model 
-4) Combining paired images. Follow the instructions below to execute each step.
-5) ...
+4) Draw bounding boxes uysing bubble detection location data saved in JSON files
+5) [Optional] Combining paired images. Follow the instructions below to execute each step.
 
 ## Step 1: Read simulation data from .dat files and visualize
 
@@ -44,15 +44,23 @@ python visualize_sim_data.py --input_dir path/to/input --output_dir path/to/outp
 
 <img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/read_visualize_sim_data.png" width="600" height="400">
 
+#### Execute following command to detect and save bubbles location information from the simulation data
+```bash
+python get_bubble_info.py --input_dir VOFdata --output_dir Uncropped --json_output_dir bubble_loc_data
+```
+
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/read_visualize_sim_data.png" width="600" height="400">
+
 ## Step 2: Converting Original Images to Resized Squares
 
 The first step involves converting original images of size 1612x786 into squares of 60x60 pixels, then resizing these squares to 256x256 pixels, and saving them to a directory.
 
 #### Execute following command to generate B&W images
 ```bash
-python prepare_bw_images.py --input_dir path/to/input --output_dir path/to/output
+python SimToLabeledBubbleData/crop_resize.py --input_dir SimToLabeledBubbleData/Uncropped --output_dir SimToLabeledBubbleData/BW
+# copy images from SimToLabeledBubbleData to Pix2PixImageTranslation/datasets
+rsync -avz --progress SimToLabeledBubbleData/BW/ Pix2PixImageTranslation/datasets/BW/
 ```
-
 
 <img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/original_img_to_bw_sqrs.png" width="600" height="400">
 
@@ -69,7 +77,26 @@ Replace path/to/dataset with the path to your dataset, and model_name with the n
 
 <img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/bw_to_realistic_img.png" width="600" height="400">
 
-## Step 4: Combining Paired Images
+#### Execute following command to rename and copy generated realistic images to correct directory
+```bash
+./rename.sh --input_dir 'results/tr1000e1000r10a01/test_latest/images' --outputdir '../SimToLabeledBubbleData/Real'
+```
+
+
+## Step 4: Draw Bounding Boxes
+In the final step, this script draw bounding boxes using the bubble detection location data from JSON files
+
+#### Execute following command to combine images and save single paired image
+```bash
+python SimToLabeledBubbleData/draw_bbox.py --input_dir 'SimToLabeledBubbleData/Real' --output_dir 'SimToLabeledBubbleData/LabelledBubbleData' --json_dir 'SimToLabeledBubbleData/bubble_loc_data'
+```
+This scripts generated labelled data of bubble detection.
+
+
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/bbox.png" width="600" height="400">
+
+
+## [Optional]: Combining Paired Images
 In the final step, this script combines paired B&W and realistic images side by side and saves the combined images to a new directory.
 
 #### Execute following command to combine images and save single paired image
