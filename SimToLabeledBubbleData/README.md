@@ -42,8 +42,6 @@ pip install mayavi==4.8.1
 python visualize_sim_data.py --input_dir path/to/input --output_dir path/to/output
 ```
 
-<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/read_visualize_sim_data.png" width="600" height="400">
-
 #### Execute following command to detect and save bubbles location information from the simulation data
 ```bash
 python get_bubble_info.py --input_dir VOFdata --output_dir Uncropped --json_output_dir bubble_loc_data
