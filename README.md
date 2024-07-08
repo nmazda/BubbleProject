@@ -28,7 +28,13 @@ This pipeline processes simulation images to generate labeled bubble data throug
 
 Please refer to our documentation [here](https://github.com/nmazda/BubbleProject/blob/main/SimToLabeledBubbleData/README.md) for more details about the steps to execute the scripts.
 
-Note : Task for applying labels to realistic images is still in porcess
+#### To run main pipeline to generate labelled bubble detection data from .dat files
+Run following command
+```bash
+chmod +x main_pipeline.sh
+./main_pipeline.sh
+```
+All the results, generated images and weights are saved at [one drive](https://1drv.ms/f/s!ArZaiTbmszajgbGPKLKluNillG28wps?e=tyg7xk)
 
 ## Black and White Autoencoder ##
 
