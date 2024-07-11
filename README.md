@@ -36,11 +36,6 @@ chmod +x main_pipeline.sh
 ```
 All the results, generated images and weights are saved at [one drive](https://1drv.ms/f/s!ArZaiTbmszajgbGPKLKluNillG28wps?e=tyg7xk)
 
-## Black and White Autoencoder ##
-
-In order to create training data for a future neural network model, we train an autoencoder to take the created Black and White (B/W) images and convert them back into the original.
-This way, when taking any data, such as the non-realistic simulation data, and turning it black and white, we can output a realistic image by running it through this neural network model.
-
 ## Black and White Bubble Data Conversion ##
 
 Black and white conversion is necessary as it provides an easy middle ground for both the original training data of the autoencoder as well as the simulation data. Having this middle ground allows us to train the neural network to reconstruct the realistic data from the converted black-and-white realistic images and still be able to apply it to the simulation data once it's converted to black-and-white.
@@ -61,19 +56,15 @@ The general mask/bounding box detection is done through MMdetection, as the ONO 
 ## Setup of ONO app
 [Here is the setup for the ONO app](https://github.com/nmazda/BubbleProject/blob/main/ONOSETUP.md)
 
-## Overlap Detection
+## Overlap Detection (Not used in final pipeline)
 
-Overlap detection is used during the Ono detection in order to help reduce the number of overlapping bubbles in the training data for the autoencoder. The original implementation of the overlap detection would iteratively run through every pairing of bubbles and check their bounding boxes for overlap, and if any overlapped the image would be thrown out and no mask produced. This however led to a very small number of images being output, as most images had some form of overlap, or there was an issue with bubble hallucinations/non-detected bubbles, which led to this lack of output.
+Overlap detection was explored for use during the Ono detection in order to help reduce the number of overlapping bubbles in the training data for the autoencoder. The original implementation of the overlap detection would iteratively run through every pairing of bubbles and check their bounding boxes for overlap, and if any overlapped the image would be thrown out and no mask produced. This however led to a very small number of images being output, as most images had some form of overlap, or there was an issue with bubble hallucinations/non-detected bubbles, which led to this lack of output.
 
-As such we have opted for a different approach. This new approach utilizes a reference image with a clear background to 'erase' the overlapping bubbles (Diagram Below)
+As such we explored a different approach. This new approach utilizes a reference image with a clear background to 'erase' the overlapping bubbles (Diagram Below)
 ![Brief diagram displaying how overlap detection currently works](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_detection.jpg)
 
 This allows for a significant increase in the number of images output and a much cleaner image than other techniques. However, in some cases, we feel there can still be additional bubbles kept. To do this we will take a heuristic approach to run through a group of overlapping bubbles from largest to smallest and keep the first that is still detected as a proper bubble by the detection program, likely being the largest bubble closest to the foreground. A diagram of this is below.
 ![Diagram showing the new heuristic approach to overlap detection](https://github.com/nmazda/BubbleProject/blob/main/git_imgs/overlap_heuristic.jpg)
-
-
-
-
 
 ## Bash Script Usage
 The bash script will output two folders, bw_split and real_split to the path_to_output_directories directory. 
