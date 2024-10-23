@@ -48,7 +48,7 @@ Note: If you want to save the visualization as image use Mayavi scene toolbar at
 python get_bubble_info.py --input_dir VOFdata --output_dir Uncropped --json_output_dir bubble_loc_data
 ```
 
-<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/read_visualize_sim_data.png" width="600" height="400">
+<img src="https://github.com/nmazda/BubbleProject/blob/main/git_imgs/MayaviScene.png" width="550" height="600">
 
 ## Step 2: Converting Original Images to Resized Squares
 
