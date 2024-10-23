@@ -39,8 +39,9 @@ pip install mayavi==4.8.1
 
 #### Execute following command to visulize the simulation data
 ```bash
-python visualize_sim_data.py --input_dir path/to/input --output_dir path/to/output
+python read_sim_data_visualize.py --input_dir path/to/input 
 ```
+Note: If you want to save the visualization as image use Mayavi scene toolbar at top to save 
 
 #### Execute following command to detect and save bubbles location information from the simulation data
 ```bash
