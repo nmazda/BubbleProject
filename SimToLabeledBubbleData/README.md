@@ -27,14 +27,17 @@ conda env create --file bubble_project.yaml --name bubble_project
 ```
 
 #### Execute following command to install required libraries
+
+First Download and install python 3.9
+
 ```bash
 pip install numpy
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 pip install vtk
 pip install pyside2
+pip install mayavi
+pip install configobj
 
-pip uninstall pyqt qt
-
-pip install mayavi==4.8.1
 ```
 
 #### Execute following command to visulize the simulation data
