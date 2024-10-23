@@ -23,7 +23,7 @@ Data Type: uint32
 Download the env.yaml
 then execute following command to create env
 ```bash
-conda env create --file env.yaml --name new_env
+conda env create --file bubble_project.yaml --name bubble_project
 ```
 
 #### Execute following command to install required libraries
