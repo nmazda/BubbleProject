@@ -51,14 +51,17 @@ run_command "source \$(conda info --base)/etc/profile.d/conda.sh && conda activa
 
 run_command "python SimToLabeledBubbleData/get_bubble_info.py --input_dir SimToLabeledBubbleData/VOFdata --output_dir SimToLabeledBubbleData/Uncropped --json_output_dir SimToLabeledBubbleData/bubble_loc_data" "Running get_bubble_info.py..."
 
-run_command "source \$(conda info --base)/etc/profile.d/conda.sh && conda activate opencv" "Activating conda environment 'opencv'..."
+# run_command "source \$(conda info --base)/etc/profile.d/conda.sh && conda activate opencv" "Activating conda environment 'opencv'..."
 
 run_command "python SimToLabeledBubbleData/crop_resize.py --input_dir SimToLabeledBubbleData/Uncropped --output_dir SimToLabeledBubbleData/BW" "Running crop_resize.py..."
 
 run_command "rsync -avz --progress SimToLabeledBubbleData/BW/ Pix2PixImageTranslation/datasets/BW/" "Copying BW folder to Pix2PixImageTranslation/datasets/..."
 
-run_command "conda activate pytorch-CycleGAN-and-pix2pix" "Activating conda environment 'pytorch-CycleGAN-and-pix2pix'..."
+# run_command "conda activate pytorch-CycleGAN-and-pix2pix" "Activating conda environment 'pytorch-CycleGAN-and-pix2pix'..."
 
+run_command "cd Pix2PixImageTranslation" "Changing directory to '../Pix2PixImageTranslation'..."
+
+# Below command is heavy, and can't be changed mostly
 run_command "cd Pix2PixImageTranslation" "Changing directory to '../Pix2PixImageTranslation'..."
 
 run_command "python test.py --dataroot ./datasets/BW --name tr1000e1000r10a01 --model test --netG unet_256 --direction AtoB --dataset_mode single --norm batch --num_test 2000" "Running test.py..."

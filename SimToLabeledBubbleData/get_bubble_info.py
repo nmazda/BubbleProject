@@ -33,6 +33,7 @@ def preprocess_data(data, lower_threshold, upper_threshold):
 
 # Function to detect bubbles and draw bounding boxes
 def detect_and_draw_bubbles(data):
+    print(data.shape)
     labeled_array, num_features = label(data)
     bubble_info = []
 

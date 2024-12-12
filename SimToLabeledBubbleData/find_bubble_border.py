@@ -39,7 +39,7 @@ def detect_bubble_borders(image_path):
         contour_points = contour[:, 0, :].tolist()  # Get x, y points
 
         # Draw contours on the contour_image
-        cv2.drawContours(contour_image, contours, i, (0, 255, 0), 2)  # Draw in green with thickness of 2
+        cv2.drawContours(contour_image, contours, i, (0, 255, 0), 1)  
 
         # Store the points in the dictionary
         bubble_borders[f'bubble_{i}'] = contour_points

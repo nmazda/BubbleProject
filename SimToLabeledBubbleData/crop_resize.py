@@ -8,10 +8,11 @@ def crop_and_resize_image(image, crop_coords, new_size):
     resized_image = cv2.resize(cropped_image, new_size, interpolation=cv2.INTER_LINEAR)
     return resized_image
 
+#changed below function to test on whole image instead of chunks of image
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Crop and Resize Images')
-    parser.add_argument('--input_dir', type=str, default='Uncropped', help='Input directory containing images')
-    parser.add_argument('--output_dir', type=str, default='BW', help='Output directory to save processed images')
+    parser.add_argument('--input_dir', type=str, default='Uncropped_test', help='Input directory containing images')
+    parser.add_argument('--output_dir', type=str, default='BW_test', help='Output directory to save processed images')
     parser.add_argument('--new_size', type=int, nargs=2, default=(256, 256), help='New size (width, height) for the resized images')
     args = parser.parse_args()
 

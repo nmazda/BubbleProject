@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Default values for input and output directories
-input_dir="results/tr1000e1000r10a01/test_latest/images"
-output_dir="../SimToLabeledBubbleData/Real"
+input_dir="C:\Users\Admin\Desktop\New\BubbleProject\SimToLabeledBubbleData\mergedBW"
+output_dir="SimToLabeledBubbleData/Real"
 
 # Parse command line arguments
 while [[ "$#" -gt 0 ]]; do
@@ -17,15 +17,22 @@ done
 # Create destination directory if it doesn't exist
 mkdir -p "$output_dir"
 
+# Check if any files match the pattern
+shopt -s nullglob
+files=("$input_dir"/*_fake.png)
+if [ ${#files[@]} -eq 0 ]; then
+    echo "No files found matching *_fake.png in $input_dir"
+    exit 1
+fi
+
 # Loop through all files in the source directory
-for filename in "$input_dir"/*_fake.png; do
-    if [ -f "$filename" ]; then
-        # Generate new filename
-        new_filename=$(basename "$filename" _fake.png).png
-        
-        # Copy the file to destination directory with new name
-        cp "$filename" "$output_dir/$new_filename"
-        
-        echo "Renamed and copied: $filename to $new_filename"
-    fi
+for filename in "${files[@]}"; do
+    # Generate new filename
+    new_filename=$(basename "$filename" _fake.png).png
+    
+    # Copy the file to destination directory with new name
+    # -n prevents overwriting existing files
+    cp -n "$filename" "$output_dir/$new_filename"
+    
+    echo "Renamed and copied: $filename to $new_filename"
 done
