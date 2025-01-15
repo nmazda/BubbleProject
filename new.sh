@@ -35,7 +35,7 @@ run_command() {
     fi
 }
 
-run_command "source \$(conda info --base)/etc/profile.d/conda.sh && conda activate C:\Users\Admin\anaconda03\envs\bubble_project" "Activating conda environment 'bubble_project'..."
+run_command "source \$(conda info --base)/etc/profile.d/conda.sh && conda activate bubble_project" "Activating conda environment 'bubble_project'..."
 run_command "python SimToLabeledBubbleData/get_bubble_info.py --input_dir SimToLabeledBubbleData/VOFdata --output_dir SimToLabeledBubbleData/Uncropped --json_output_dir SimToLabeledBubbleData/bubble_loc_data"
 run_command "python SimToLabeledBubbleData/crop_resize.py --input_dir SimToLabeledBubbleData/Uncropped --output_dir SimToLabeledBubbleData/BW"
 run_command "python SimToLabeledBubbleData/imagemerge.py"
